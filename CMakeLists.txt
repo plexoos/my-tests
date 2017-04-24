@@ -34,3 +34,7 @@ include_directories(
 )
 
 link_directories( ${ROOT_LIBRARY_DIR} )
+
+
+add_executable(test-StiTrackNode-errPropag6 test-StiTrackNode-errPropag6/main.cxx)
+target_link_libraries(test-StiTrackNode-errPropag6 rt pthread)
