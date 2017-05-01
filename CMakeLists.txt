@@ -38,3 +38,5 @@ link_directories( ${ROOT_LIBRARY_DIR} )
 
 add_executable(test-StiTrackNode-errPropag6 test-StiTrackNode-errPropag6/main.cxx)
 target_link_libraries(test-StiTrackNode-errPropag6 rt pthread)
+
+add_executable(test-StiTrackNode-errPropag6-vs-trasat-output test-StiTrackNode-errPropag6/main-errPropag6-vs-trasat-output.cxx)
