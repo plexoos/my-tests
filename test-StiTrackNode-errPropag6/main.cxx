@@ -5,6 +5,7 @@
 #include "common/tools.h"
 #include "test-StiTrackNode-errPropag6/before.h"
 #include "test-StiTrackNode-errPropag6/after.h"
+#include "test-StiTrackNode-errPropag6/trasat.h"
 
 
 double G_zero_freq[21];
@@ -81,10 +82,21 @@ tested_function_t process_arg1(const char *arg)
 {
    std::string arg1(arg);
 
-   if ( std::string("after").find(arg1) && std::string("before").find(arg1) )
+   // The arg1 value does not match any valid value
+   if ( std::string("after").find(arg1) &&
+        std::string("before").find(arg1) &&
+        std::string("trasat").find(arg1) )
+   {
       std::cout << "error: arg1 ignored\n";
+   }
 
-   return (std::string("after").find(arg1) == 0 ? after::errPropag6 : before::errPropag6);
+   if (std::string("after").find(arg1) == 0)
+      return after::errPropag6;
+
+   if (std::string("trasat").find(arg1) == 0)
+      return trasat::errPropag6;
+
+   return before::errPropag6;
 }
 
 
