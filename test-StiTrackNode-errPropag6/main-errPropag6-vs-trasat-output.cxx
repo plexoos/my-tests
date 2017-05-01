@@ -36,7 +36,9 @@ int main(int argc, char **argv)
    double myG_orig[21];
    std::copy( std::begin(myG), std::end(myG), std::begin(myG_orig) );
 
+   for (int jk=0; jk<6; jk++) { myF[jk][jk] -= 1; }
    errPropag6_orig(myG_orig, myF, 6);
+   for (int jk=0; jk<6; jk++) { myF[jk][jk] += 1; }
 
    double myG_trasat[21];
    std::copy( std::begin(myG), std::end(myG), std::begin(myG_trasat) );
