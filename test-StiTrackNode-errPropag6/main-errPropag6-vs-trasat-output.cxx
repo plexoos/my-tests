@@ -6,10 +6,11 @@
 
 
 void errPropag6_orig(double G[21], const double F[6][6], int nF);
+void errPropag6_direct(double G[21], const double F[6][6], int nF);
 void errPropag6_trasat(double G[21], const double F[6][6], int nF);
 
 void print(const double (&G)[21], const double (&F)[6][6]);
-void print(const double (&G)[21], const double (&G1)[21], const double (&G2)[21]);
+void print(const double (&G)[21], const double (&G1)[21], const double (&G2)[21], const double (&G3)[21]);
 double my_rand(const double min, const double max);
 
 
@@ -42,9 +43,15 @@ int main(int argc, char **argv)
 
    errPropag6_trasat(myG_trasat, myF, 6);
 
+   // Make a copy of the input and use it
+   double myG_direct[21];
+   std::copy( std::begin(myG), std::end(myG), std::begin(myG_direct) );
+
+   errPropag6_direct(myG_direct, myF, 6);
+
    std::cout << "\n" << "output:\n";
 
-   print(myG, myG_orig, myG_trasat);
+   print(myG, myG_orig, myG_trasat, myG_direct);
 
    return EXIT_SUCCESS;
 }
@@ -91,6 +98,41 @@ void errPropag6_orig(double G[21], const double F[6][6], int nF)
     G[ik] += (s + fg[i][k] + fg[k][i]);
   }}
 
+}
+
+
+
+void errPropag6_direct(double G[21], const double F[6][6], int nF)
+{
+  enum {NP=6,NE=21};
+
+  double g[NE];      memcpy(g,    G,sizeof( g));
+  memset(G , 0, sizeof(double)*21);
+  double fg[NP][NP]; memset(fg[0],0,sizeof(fg));
+
+  //double myF[6][6];  memcpy(myF[0],F[0],sizeof(fg));
+  //for (int i=0;i<NP;i++) {myF[i][i]+=1.;}
+
+  // This is a product of F*G == FG
+  // fg_ik = sum_j_N (f_ij*g_jk) = f_i1*g_1k + f_i2*g_2k + ... + f_iN*g_Nk
+  for (int i=0;i<nF;i++) {
+  for (int j=0;j<nF;j++) {
+    for (int k=0;k<NP;k++) {
+      int jk = idx66[j][k];
+      fg[i][k] += F[i][j]*g[jk];
+  }}}
+
+  // This is a product of FG * F^T
+  for (int i=0;i<NP;i++) {
+  for (int k=i;k<NP;k++) {
+
+    int ik = idx66[i][k];
+
+    for (int j=0;j<NP;j++)
+    {
+      G[ik] += fg[i][j]*F[k][j];
+    }
+  }}
 }
 
 
@@ -172,21 +214,23 @@ void print(const double (&G)[21], const double (&F)[6][6])
 
 
 
-void print(const double (&G)[21], const double (&G1)[21], const double (&G2)[21])
+void print(const double (&G)[21], const double (&G1)[21], const double (&G2)[21], const double (&G3)[21])
 {
    std::cout << std::fixed << std::setprecision(6) << std::right;
 
    std::cout << std::setw(17) << "index"
              << std::setw(17) << "G in"
              << std::setw(17) << "G out: orig"
-             << std::setw(17) << "G out: trasat" << "\n";
+             << std::setw(17) << "G out: trasat"
+             << std::setw(17) << "G out: direct" << "\n";
 
    for (int i = 0; i < 21; i++)
    {
       std::cout << std::setw(17) << i
                 << std::setw(17) << G[i]
                 << std::setw(17) << G1[i]
-                << std::setw(17) << G2[i] << "\n";
+                << std::setw(17) << G2[i]
+                << std::setw(17) << G3[i] << "\n";
    }
 }
 
