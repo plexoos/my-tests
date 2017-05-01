@@ -1,3 +1,18 @@
+
+This directory currently contains two tests for the
+`StiTrackNode::errPropag6()` function:
+
+* `main-errPropag6-vs-trasat-output.cxx` compares the output of `errPropag6()`
+to that of `TCL::trasat()`. Both functions are supposed to calculate the matrix
+operation given by `ASA^T` with A, S, and A^T being 6x6 matrices. The test can
+be compiled at ideone (http://ideone.com/tI1MgY) or by simply doing:
+
+    $ g++ -std=c++11 main-errPropag6-vs-trasat-output.cxx
+
+* `main.cxx` profiles `errPropag6()` in its original and modified versions. See
+below for details.
+
+
 Compile and run
 ---------------
 
