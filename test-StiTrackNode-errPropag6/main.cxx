@@ -16,11 +16,12 @@ double F_zero_freq[36];
 using tested_function_t = void (*)(double G[21], const double F[6][6], int nF);
 
 tested_function_t process_arg1(const char *arg, std::string& test_func_name);
-int  process_arg2(const char *arg);
+int     process_arg2(const char *arg);
+double  process_arg3(const char *arg);
 
 void print(const double (&G)[21], const double (&F)[6][6]);
-void fill_G(double (&G)[21]);
-void fill_F(double (&F)[6][6]);
+void fill_G(double (&G)[21], double zero_freq);
+void fill_F(double (&F)[6][6], double zero_freq);
 void fill_zero_freq(double (&G_zero_freq)[21], double (&F_zero_freq)[36]);
 
 
@@ -33,10 +34,12 @@ int main(int argc, char **argv)
 
    // Process second optional argument
    int n_iterations = (argc >= 3 ? process_arg2(argv[2]) : 10000000);
+   double zero_freq = (argc >= 4 ? process_arg3(argv[3]) : -1);
 
    std::cout << "DEBUG?:       " << NDEBUG_STR << "\n"
              << "test_case:    " << test_func_name << "\n"
-             << "n_iterations: " << n_iterations << "\n";
+             << "n_iterations: " << n_iterations << "\n"
+             << "zero_freq:    " << zero_freq << " (<= 0 means measured freq.)\n";
 
 
    // Generate histograms with zeros to simulate realistic input
@@ -54,8 +57,8 @@ int main(int argc, char **argv)
    for (int i=0; i<n_iterations; i++)
    {
       // Generate input for the function being tested
-      fill_G(myG);
-      fill_F(myF);
+      fill_G(myG, zero_freq);
+      fill_F(myF, zero_freq);
 
       DEBUG_CODE(
 
@@ -153,6 +156,18 @@ int process_arg2(const char *arg)
 
 
 
+double process_arg3(const char *arg)
+{
+   double arg3 = std::atof(arg);
+
+   if (arg3 == 0)
+      std::cout << "ERROR: arg3 ignored. Enter real number in (0,1] range\n";
+
+   return ( arg3 < 0 || arg3 > 1 ? -1 : arg3);
+}
+
+
+
 void print(const double (&G)[21], const double (&F)[6][6])
 {
    std::cout << std::setprecision(5);
@@ -168,29 +183,29 @@ void print(const double (&G)[21], const double (&F)[6][6])
 
 
 
-void fill_G(double (&G)[21])
+void fill_G(double (&G)[21], double zero_freq)
 {
    for (int i = 0; i < 21; i++)
    {
-      G[i] = (tools::my_rand(0, 1) <= G_zero_freq[i]) ? 0 : tools::my_rand(-0.5, 0.5);
-
-      // Fifty percent chance to get a zero element
-      //G[i] = (tools::my_rand(0, 1) < 0.9) ? 0 : tools::my_rand(-0.5, 0.5);
+      if (zero_freq <= 0)
+         G[i] = (tools::my_rand(0, 1) <= G_zero_freq[i]) ? 0 : tools::my_rand(-0.5, 0.5);
+      else // a "zero_freq" chance to get a zero element
+         G[i] = (tools::my_rand(0, 1) < zero_freq) ? 0 : tools::my_rand(-0.5, 0.5);
    }
 }
 
 
 
-void fill_F(double (&F)[6][6])
+void fill_F(double (&F)[6][6], double zero_freq)
 {
    for (int i=0; i<6; i++)
    {
       for (int j=0; j<6; j++)
       {
-         F[i][j] = (tools::my_rand(0, 1) <= F_zero_freq[i*6+j]) ? 0 : tools::my_rand(-0.5, 0.5);
-
-         // Fifty percent chance to get a zero element
-         //F[i][j] = (tools::my_rand(0, 1) < 0.5 ) ? 0 : tools::my_rand(-0.5, 0.5);
+         if (zero_freq <= 0)
+            F[i][j] = (tools::my_rand(0, 1) <= F_zero_freq[i*6+j]) ? 0 : tools::my_rand(-0.5, 0.5);
+         else // a "zero_freq" chance to get a zero element
+            F[i][j] = (tools::my_rand(0, 1) < zero_freq) ? 0 : tools::my_rand(-0.5, 0.5);
       }
    }
 }
