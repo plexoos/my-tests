@@ -1,6 +1,5 @@
-
 This directory currently contains two tests for the
-`StiTrackNode::errPropag6()` function:
+`StiTrackNode::errPropag6(double G[21], const double F[6][6])` function:
 
 * `main-errPropag6-vs-trasat-output.cxx` compares the output of `errPropag6()`
 to that of `TCL::trasat()`. Both functions are supposed to calculate the matrix
@@ -26,47 +25,51 @@ To compile the test do:
 Benchmark one of the versions of `StiTrackNode::errPropag6()` by running the
 test as:
 
-    $ test-StiTrackNode-errPropag6 before
-    $ test-StiTrackNode-errPropag6 after
+    $ test-StiTrackNode-errPropag6 <test_func_name> <n_iterations> <freq_of_zeros>
 
-The two versions [before.h](before.h) and [after.h](after.h) test the effect of
-the CPU branch prediction by removing the check for non-zero matrix elements
-inside the nested for-loops.
+with the following values
+
+    <test_func_name>:  {orig, orig_no_branch, trasat, smatrix, eigen}
+    <n_iterations>:    The number of measurements
+    <freq_of_zeros>:   f = (0, 1] or f <= 0 for realistic simulation
 
 
 Results
 -------
 
-* With realistic distribution of zeros in the F and G matrices (see below)
+We benchmark the following versions of the `StiTrackNode::errPropag6()`
+function with 10,000,000 iterations.
 
-      before: 5.745004423 s
-      after:  6.694923842 s
+* [orig.h](orig.h) - The original version used in Sti
 
-* With zero rate `f` in all matrix elements
+* [orig_no_branch.h](orig_no_branch.h) - No `if` statements to check (non-)zero
+  matrix elements inside the nested `for`-loops. This removes the need for CPU branch prediction
 
-  * f = 0.05
+* [trasat.h](trasat.h) - Based on `TCL::trasat`
 
-        before: 9.584304128
-        after:  6.662425031
+* [smatrix.h](smatrix.h) - Vectorized calculation based on `ROOT::Math::SMatrix`
+
+* [eigen.h](eigen.h) - Vectorized calculation based on `Eigen` library
+
+The plot below shows the time spent in the function for a set of `f` values
+ranging from 0.1 to 0.9. The first point at f = 0 corresponds to the measured
+rate for realistic simulation.
+
+<iframe width="800" height="600" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/2.embed">
+  <a href="https://plot.ly/~plexoos/2/?share_key=utCiob32MBUoBG1UjixSzm" target="_blank">
+  <img src="https://plot.ly/~plexoos/2.png?share_key=utCiob32MBUoBG1UjixSzm" style="max-width: 100%;"  width="800"/>
+  </a>
+</iframe>
+
+40% gain in speed when switching from `orig` to `eigen` saves
+
+27% gain in speed when switching from `orig` to `smatrix` or `orig_no_branch`
 
 
-  * f = 0.10
+#### Estimating rate of zero matrix elements
 
-        before: 11.655979576
-        after:   6.406468481
-
-  * f = 0.50
-
-        before: 17.545420334
-        after:   6.710300206
-
-  * f = 0.90
-
-        before: 7.158184174
-        after:  6.679330367
-
-
-For realistic simulation 10k calls were made to sample the inputs.
+For realistic simulation we sampled inputs from 10k calls during reconstruction
+of a single real event.
 
 Frequency of zeros in F matrix by element index
 
