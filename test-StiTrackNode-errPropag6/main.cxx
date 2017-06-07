@@ -65,12 +65,20 @@ int main(int argc, char **argv)
 
       );
 
+      // Adjustments for original errPropag6
+      if (test_func == orig::errPropag6 || test_func == orig_no_branch::errPropag6)
+         for (int jk=0; jk<6; jk++) { myF[jk][jk] -= 1; }
+
       // Perform the actual measurement
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_0);
 
       test_func(myG, myF, 6);
 
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_1);
+
+      // Adjustments for original errPropag6
+      if (test_func == orig::errPropag6 || test_func == orig_no_branch::errPropag6)
+         for (int jk=0; jk<6; jk++) { myF[jk][jk] += 1; }
 
       DEBUG_CODE(
 
