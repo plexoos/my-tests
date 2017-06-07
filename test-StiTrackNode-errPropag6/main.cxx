@@ -30,12 +30,8 @@ int main(int argc, char **argv)
    // Process second optional argument
    int n_iterations = (argc >= 3 ? process_arg2(argv[2]) : 10000000);
 
-#ifndef NDEBUG
-   std::cout << "NDEBUG:       ndef\n"
-#else
-   std::cout << "NDEBUG:       def\n"
-#endif
-             << "test_case:    " << (test_func == after::errPropag6 ? "after" : "before") << "\n"
+   std::cout << "DEBUG?:       " << NDEBUG_STR << "\n"
+             << "test_case:    " << test_func_name << "\n"
              << "n_iterations: " << n_iterations << "\n";
 
 
@@ -53,13 +49,17 @@ int main(int argc, char **argv)
 
    for (int i=0; i<n_iterations; i++)
    {
-      DEBUG_CODE( std::cout << "\nIteration: #" << i+1 << "\n"; );
-
       // Generate input for the function being tested
       fill_G(myG);
       fill_F(myF);
 
-      DEBUG_CODE( print(myG, myF); );
+      DEBUG_CODE(
+
+      std::cout << "\nIteration: #" << i+1 << "\n"
+                << "input:\n";
+      print(myG, myF);
+
+      );
 
       // Perform the actual measurement
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_0);
@@ -67,6 +67,13 @@ int main(int argc, char **argv)
       test_func(myG, myF, 6);
 
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_1);
+
+      DEBUG_CODE(
+
+      std::cout << "output:\n";
+      print(myG, myF);
+
+      );
 
       tools::time_add(time_accum, tools::time_diff(time_0, time_1) );
    }
@@ -115,6 +122,8 @@ int process_arg2(const char *arg)
 
 void print(const double (&G)[21], const double (&F)[6][6])
 {
+   std::cout << std::setprecision(5);
+
    std::cout << "G: ";
    std::copy(G, G + 21, std::ostream_iterator<double>(std::cout, ", "));
    std::cout << "\n";

@@ -6,10 +6,14 @@
 #include <time.h>
 
 
+#define TO_STRING(x) #x
+
 #ifndef NDEBUG
 #define DEBUG_CODE(x) do { x } while (0)
+#define NDEBUG_STR TO_STRING(yes)
 #else
 #define DEBUG_CODE(x)
+#define NDEBUG_STR TO_STRING(no)
 #endif
 
 
