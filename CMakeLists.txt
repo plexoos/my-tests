@@ -30,6 +30,7 @@ endif()
 
 include_directories(
 	${ROOT_INCLUDE_DIR}
+	${EIGEN_INCLUDE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 

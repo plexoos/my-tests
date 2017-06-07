@@ -6,6 +6,8 @@
 #include "test-StiTrackNode-errPropag6/orig.h"
 #include "test-StiTrackNode-errPropag6/orig_no_branch.h"
 #include "test-StiTrackNode-errPropag6/trasat.h"
+#include "test-StiTrackNode-errPropag6/smatrix.h"
+#include "test-StiTrackNode-errPropag6/eigen.h"
 
 
 double G_zero_freq[21];
@@ -94,7 +96,9 @@ tested_function_t process_arg1(const char *arg, std::string& test_func_name)
    // The arg1 value does not match any valid value
    if ( std::string("orig_no_branch").find(arg1) &&
         std::string("orig").find(arg1) &&
-        std::string("trasat").find(arg1) )
+        std::string("trasat").find(arg1) &&
+        std::string("smatrix").find(arg1) &&
+        std::string("eigen").find(arg1) )
    {
       std::cout << "error: arg1 ignored\n";
    }
@@ -109,6 +113,18 @@ tested_function_t process_arg1(const char *arg, std::string& test_func_name)
    {
       test_func_name = "trasat";
       return trasat::errPropag6;
+   }
+
+   if (std::string("smatrix").find(arg1) == 0)
+   {
+      test_func_name = "smatrix";
+      return smatrix::errPropag6;
+   }
+
+   if (std::string("eigen").find(arg1) == 0)
+   {
+      test_func_name = "eigen";
+      return eigen::errPropag6;
    }
 
    test_func_name = "orig";
