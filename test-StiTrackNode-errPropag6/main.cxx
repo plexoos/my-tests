@@ -13,8 +13,9 @@ double F_zero_freq[36];
 
 using tested_function_t = void (*)(double G[21], const double F[6][6], int nF);
 
-tested_function_t process_arg1(const char *arg);
+tested_function_t process_arg1(const char *arg, std::string& test_func_name);
 int  process_arg2(const char *arg);
+
 void print(const double (&G)[21], const double (&F)[6][6]);
 void fill_G(double (&G)[21]);
 void fill_F(double (&F)[6][6]);
@@ -25,7 +26,8 @@ void fill_zero_freq(double (&G_zero_freq)[21], double (&F_zero_freq)[36]);
 int main(int argc, char **argv)
 {
    // Process first optional argument
-   tested_function_t test_func = (argc >= 2 ? process_arg1(argv[1]) : before::errPropag6);
+   std::string       test_func_name("before");
+   tested_function_t test_func = (argc >= 2 ? process_arg1(argv[1], test_func_name) : before::errPropag6);
 
    // Process second optional argument
    int n_iterations = (argc >= 3 ? process_arg2(argv[2]) : 10000000);
@@ -85,7 +87,7 @@ int main(int argc, char **argv)
 
 
 
-tested_function_t process_arg1(const char *arg)
+tested_function_t process_arg1(const char *arg, std::string& test_func_name)
 {
    std::string arg1(arg);
 
@@ -98,11 +100,18 @@ tested_function_t process_arg1(const char *arg)
    }
 
    if (std::string("after").find(arg1) == 0)
+   {
+      test_func_name = "after";
       return after::errPropag6;
+   }
 
    if (std::string("trasat").find(arg1) == 0)
+   {
+      test_func_name = "trasat";
       return trasat::errPropag6;
+   }
 
+   test_func_name = "before";
    return before::errPropag6;
 }
 
