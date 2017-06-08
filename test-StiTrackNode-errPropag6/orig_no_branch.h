@@ -1,6 +1,6 @@
 #include <cstring>
 
-namespace after
+namespace orig_no_branch
 {
 
 static const int idx66[6][6] =

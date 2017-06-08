@@ -3,8 +3,8 @@
 #include <string>
 
 #include "common/tools.h"
-#include "test-StiTrackNode-errPropag6/before.h"
-#include "test-StiTrackNode-errPropag6/after.h"
+#include "test-StiTrackNode-errPropag6/orig.h"
+#include "test-StiTrackNode-errPropag6/orig_no_branch.h"
 #include "test-StiTrackNode-errPropag6/trasat.h"
 
 
@@ -26,8 +26,8 @@ void fill_zero_freq(double (&G_zero_freq)[21], double (&F_zero_freq)[36]);
 int main(int argc, char **argv)
 {
    // Process first optional argument
-   std::string       test_func_name("before");
-   tested_function_t test_func = (argc >= 2 ? process_arg1(argv[1], test_func_name) : before::errPropag6);
+   std::string       test_func_name("orig");
+   tested_function_t test_func = (argc >= 2 ? process_arg1(argv[1], test_func_name) : orig::errPropag6);
 
    // Process second optional argument
    int n_iterations = (argc >= 3 ? process_arg2(argv[2]) : 10000000);
@@ -92,17 +92,17 @@ tested_function_t process_arg1(const char *arg, std::string& test_func_name)
    std::string arg1(arg);
 
    // The arg1 value does not match any valid value
-   if ( std::string("after").find(arg1) &&
-        std::string("before").find(arg1) &&
+   if ( std::string("orig_no_branch").find(arg1) &&
+        std::string("orig").find(arg1) &&
         std::string("trasat").find(arg1) )
    {
       std::cout << "error: arg1 ignored\n";
    }
 
-   if (std::string("after").find(arg1) == 0)
+   if (std::string("orig_no_branch").find(arg1) == 0)
    {
-      test_func_name = "after";
-      return after::errPropag6;
+      test_func_name = "orig_no_branch";
+      return orig_no_branch::errPropag6;
    }
 
    if (std::string("trasat").find(arg1) == 0)
@@ -111,8 +111,8 @@ tested_function_t process_arg1(const char *arg, std::string& test_func_name)
       return trasat::errPropag6;
    }
 
-   test_func_name = "before";
-   return before::errPropag6;
+   test_func_name = "orig";
+   return orig::errPropag6;
 }
 
 

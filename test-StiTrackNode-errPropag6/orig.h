@@ -1,6 +1,6 @@
 #include <cstring>
 
-namespace before
+namespace orig
 {
 
 static const int idx66[6][6] =
