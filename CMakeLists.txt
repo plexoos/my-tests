@@ -37,6 +37,12 @@ include_directories(
 link_directories( ${ROOT_LIBRARY_DIR} )
 
 
+add_executable(float_vs_double misc/float_vs_double.cxx)
+target_link_libraries(float_vs_double rt)
+
+add_executable(std_function misc/std_function.cxx)
+add_executable(std_chrono misc/std_chrono.cxx)
+
 add_executable(test-StiTrackNode-errPropag6 test-StiTrackNode-errPropag6/main.cxx)
 target_link_libraries(test-StiTrackNode-errPropag6 rt pthread)
 
