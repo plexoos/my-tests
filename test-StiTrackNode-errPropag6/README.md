@@ -19,7 +19,9 @@ To compile the test do:
 
     $ cd my-tests
     $ mkdir build && cd build
-    $ cmake -D EIGEN_INCLUDE_DIR=~/eigen-eigen-67e894c6cd8f/ -D CMAKE_CXX_FLAGS="-march=native" -D CMAKE_BUILD_TYPE=Release ../
+    $ cmake -D EIGEN_INCLUDE_DIR=~/eigen-eigen-67e894c6cd8f/ \
+            -D CMAKE_CXX_FLAGS="-march=native" \
+            -D CMAKE_BUILD_TYPE=Release ../
     $ make
 
 Benchmark one of the versions of `StiTrackNode::errPropag6()` by running the

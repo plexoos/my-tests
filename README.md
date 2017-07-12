@@ -1,11 +1,17 @@
-
 Compile and run (Linux)
 -----------------------
 
     $ git clone https://github.com/plexoos/my-tests.git
-    $ cd my-tests
-    $ g++ float_vs_double.cxx -lrt -o float_vs_double
-    $ ./float_vs_double
+    $ cd my-tests && mkdir build && cd build
+    $ cmake -D CMAKE_BUILD_TYPE=Release ../
+    $ cmake --build .
+
+Some targets may require additional flags. For example,
+
+* **test-StiTrackNode-errPropag6**
+
+      -D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/
+      -D CMAKE_CXX_FLAGS="-march=native"
 
 
 Link to test results (gihub.io pages)
