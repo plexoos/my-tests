@@ -19,9 +19,10 @@ double joinTwo(int nP1, const double *P1, const double *E1,
   int nE1 = nP1 * (nP1 + 1) / 2;
   int nE2 = nP2 * (nP2 + 1) / 2;
 
-  TArrayD ard(nE2*6);
+  // Large buffer to hold 6 times the packed symmetric triangular matrix
+  double ard[nE2*6];
 
-  double *a = ard.GetArray();
+  double *a = ard;
   double *sumE          = (a);         // pointer to begin
   double *sumEI         = (a += nE2);  // pointer to begin + 1*nE2
   double *e1sumEIe1     = (a += nE2);  // pointer to begin + 2*nE2
