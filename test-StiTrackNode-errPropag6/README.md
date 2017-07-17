@@ -22,7 +22,7 @@ To compile the test do:
     $ cmake -D EIGEN_INCLUDE_DIR=~/eigen-eigen-67e894c6cd8f/ \
             -D CMAKE_CXX_FLAGS="-march=native" \
             -D CMAKE_BUILD_TYPE=Release ../
-    $ make
+    $ cmake --build ./ --target test-StiTrackNode-errPropag6
 
 Benchmark one of the versions of `StiTrackNode::errPropag6()` by running the
 test as:
@@ -80,3 +80,40 @@ Frequency of zeros in F matrix by element index
 Frequency of zeros in G matrix by element index
 
 ![h_G_zero_rate.png](https://plexoos.github.io/my-tests/test-StiTrackNode-errPropag6/h_G_zero_rate.png)
+
+
+Systematic tests for various compiler options
+---------------------------------------------
+
+A few useful commands to check supported and enabled options in `gcc`:
+
+    gcc -march=native -Q --help=target
+    gcc -march=native -E -v - </dev/null 2>&1 | grep cc1
+    gcc -march=native -mno-avx -dM -E - < /dev/null | egrep "SSE|AVX"
+
+The following sets of `gcc` compiler flags are define:
+
+    <cxx_flags>:
+
+    -march=native -O2 -m32 -mno-avx
+    -march=native -O2 -m64 -mno-avx
+    -march=native -O2 -m32 -mavx
+    -march=native -O2 -m64 -mavx
+    -march=native -O3 -m32 -mno-avx
+    -march=native -O3 -m64 -mno-avx
+    -march=native -O2 -m34 -fno-tree-vectorize -D EIGEN_DONT_VECTORIZE
+    -march=native -O2 -m32 -fno-tree-vectorize -D EIGEN_DONT_VECTORIZE
+
+Build commands:
+
+    cmake -D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D CMAKE_CXX_FLAGS=" <cxx_flags> -D NDEBUG" ../
+    cmake --build . --target test-StiTrackNode-errPropag6 -- VERBOSE=1
+
+Another `gcc` option to try is `-ffast-math` but it can give significantly
+different numerical results.
+
+<iframe width="1000" height="600" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/40.embed">
+  <a href="https://plot.ly/~plexoos/40/?share_key=grVSvcTNKEAy7jnWrz0seV" target="_blank">
+  <img src="https://plot.ly/~plexoos/40.png?share_key=grVSvcTNKEAy7jnWrz0seV" style="max-width: 100%;"  width="1000"/>
+  </a>
+</iframe>
