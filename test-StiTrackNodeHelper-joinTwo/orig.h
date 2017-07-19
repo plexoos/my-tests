@@ -1,6 +1,16 @@
-double StiTrackNodeHelper::joinTwo(int nP1, const double *P1, const double *E1,
-                                   int nP2, const double *P2, const double *E2,
-                                                  double *PJ,       double *EJ)
+#include <cassert>
+#include <cmath>
+
+#include "common/TCL.h"
+
+
+namespace orig
+{
+
+
+double joinTwo(int nP1, const double *P1, const double *E1,
+               int nP2, const double *P2, const double *E2,
+                              double *PJ,       double *EJ)
 {
   assert(nP1 <= nP2);
 
@@ -112,4 +122,7 @@ double StiTrackNodeHelper::joinTwo(int nP1, const double *P1, const double *E1,
   }
 
   return chi2;
+}
+
+
 }
