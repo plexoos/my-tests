@@ -93,7 +93,8 @@ int main(int argc, char **argv)
       tools::time_add(time_accum, tools::time_diff(time_0, time_1) );
    }
 
-   std::cout << "elapsed time: " << time_accum.tv_sec << "." << time_accum.tv_nsec << std::endl;
+   std::cout << "elapsed time: " << test_func_name << ", "
+             << time_accum.tv_sec << "." << time_accum.tv_nsec << ", " << std::endl;
 
    return EXIT_SUCCESS;
 }
