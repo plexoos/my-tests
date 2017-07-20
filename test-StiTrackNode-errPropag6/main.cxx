@@ -35,7 +35,7 @@ int main(int argc, char **argv)
    tested_function_t test_func = (argc > 1 ? process_arg1(argv[1], test_func_name) : orig::errPropag6);
 
    // Process 2nd optional argument
-   int n_iterations = (argc > 2 ? process_arg2(argv[2]) : 10000000);
+   int n_iterations = (argc > 2 ? process_arg2(argv[2]) : 1000000);
 
    // Process 3rd optional argument
    double zero_freq = (argc > 3 ? process_arg3(argv[3]) : -1);
@@ -165,7 +165,7 @@ int process_arg2(const char *arg)
    if (arg2 < 0)
       std::cout << "ERROR: arg2 ignored\n";
 
-   return (arg2 < 0 ? 10000000 : arg2+1);
+   return (arg2 < 0 ? 1000000 : arg2+1);
 }
 
 
