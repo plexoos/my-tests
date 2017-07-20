@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iterator>
 #include <string>
+#include <cctype>
 
 #include "common/tools.h"
 #include "test-StiTrackNode-errPropag6/orig.h"
@@ -18,6 +19,7 @@ using tested_function_t = void (*)(double G[21], const double F[6][6], int nF);
 tested_function_t process_arg1(const char *arg, std::string& test_func_name);
 int     process_arg2(const char *arg);
 double  process_arg3(const char *arg);
+int     process_arg4(const char *arg);
 
 void print(const double (&G)[21], const double (&F)[6][6]);
 void fill_G(double (&G)[21], double zero_freq);
@@ -35,6 +37,9 @@ int main(int argc, char **argv)
    // Process second optional argument
    int n_iterations = (argc >= 3 ? process_arg2(argv[2]) : 10000000);
    double zero_freq = (argc >= 4 ? process_arg3(argv[3]) : -1);
+
+   // Process 4th optional argument
+   int verbosity = (argc > 4 ? process_arg4(argv[4]) : 1);
 
    std::cout << "DEBUG?:       " << NDEBUG_STR << "\n"
              << "test_case:    " << test_func_name << "\n"
@@ -160,6 +165,22 @@ double process_arg3(const char *arg)
       std::cout << "ERROR: arg3 ignored. Enter real number in (0,1] range\n";
 
    return ( arg3 < 0 || arg3 > 1 ? -1 : arg3);
+}
+
+
+
+int process_arg4(const char *arg)
+{
+   const std::string verbosity(arg);
+
+   if (verbosity.size() == 2 && verbosity[0] == 'v' && isdigit(verbosity[1]))
+   {
+      return std::atoi( &verbosity[1] );
+   }
+   else
+   {
+      return 1;
+   }
 }
 
 
