@@ -41,10 +41,15 @@ int main(int argc, char **argv)
    // Process 4th optional argument
    int verbosity = (argc > 4 ? process_arg4(argv[4]) : 1);
 
-   std::cout << "DEBUG?:       " << NDEBUG_STR << "\n"
-             << "test_case:    " << test_func_name << "\n"
-             << "n_iterations: " << n_iterations << "\n"
-             << "zero_freq:    " << zero_freq << " (<= 0 means measured freq.)\n";
+
+   if (verbosity > 1)
+   {
+      std::cout << "DEBUG?:       " << NDEBUG_STR << "\n"
+                << "test_case:    " << test_func_name << "\n"
+                << "n_iterations: " << n_iterations << "\n"
+                << "zero_freq:    " << zero_freq << " (<= 0 means measured freq.)\n"
+                << "verbosity:    " << verbosity << "\n";
+   }
 
 
    // Generate histograms with zeros to simulate realistic input
@@ -98,8 +103,14 @@ int main(int argc, char **argv)
       tools::time_add(time_accum, tools::time_diff(time_0, time_1) );
    }
 
-   std::cout << "elapsed time: " << test_func_name << ", "
-             << time_accum.tv_sec << "." << time_accum.tv_nsec << ", " << std::endl;
+   // Print out final result based on verbosity level
+   if (verbosity > 1)
+      std::cout << "elapsed time: " << test_func_name << ", "
+                << time_accum.tv_sec << "." << time_accum.tv_nsec << ", " << std::endl;
+   else if (verbosity > 0)
+      std::cout << std::setprecision(10)
+                << time_accum.tv_sec*1000 + time_accum.tv_nsec/1000000. << std::endl;
+   else {}
 
    return EXIT_SUCCESS;
 }
