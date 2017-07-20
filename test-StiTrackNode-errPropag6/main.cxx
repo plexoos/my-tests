@@ -30,13 +30,15 @@ void fill_zero_freq(double (&G_zero_freq)[21], double (&F_zero_freq)[36]);
 
 int main(int argc, char **argv)
 {
-   // Process first optional argument
+   // Process 1st optional argument
    std::string       test_func_name("orig");
-   tested_function_t test_func = (argc >= 2 ? process_arg1(argv[1], test_func_name) : orig::errPropag6);
+   tested_function_t test_func = (argc > 1 ? process_arg1(argv[1], test_func_name) : orig::errPropag6);
 
-   // Process second optional argument
-   int n_iterations = (argc >= 3 ? process_arg2(argv[2]) : 10000000);
-   double zero_freq = (argc >= 4 ? process_arg3(argv[3]) : -1);
+   // Process 2nd optional argument
+   int n_iterations = (argc > 2 ? process_arg2(argv[2]) : 10000000);
+
+   // Process 3rd optional argument
+   double zero_freq = (argc > 3 ? process_arg3(argv[3]) : -1);
 
    // Process 4th optional argument
    int verbosity = (argc > 4 ? process_arg4(argv[4]) : 1);
@@ -64,7 +66,7 @@ int main(int argc, char **argv)
    srand(1);
 
 
-   for (int i=0; i<n_iterations; i++)
+   for (int i = 0; i < n_iterations; i++)
    {
       // Generate input for the function being tested
       fill_G(myG, zero_freq);
