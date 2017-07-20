@@ -7,6 +7,10 @@
 
 #include "common/tools.h"
 #include "test-StiTrackNodeHelper-joinTwo/orig.h"
+#include "test-StiTrackNodeHelper-joinTwo/eigen.h"
+#include "test-StiTrackNodeHelper-joinTwo/eigen_float.h"
+#include "test-StiTrackNodeHelper-joinTwo/eigen_as_orig.h"
+#include "test-StiTrackNodeHelper-joinTwo/eigen_unpacked.h"
 
 
 using tested_function_t = double (*)(int nP1, const double *P1, const double *E1,
@@ -110,6 +114,26 @@ tested_function_t process_arg1(const char *arg, std::string& test_func_name)
    {
       test_func_name = "orig";
       return orig::joinTwo;
+   }
+   else if (std::string("eigen").find(arg1) == 0)
+   {
+      test_func_name = "eigen";
+      return eigen::joinTwo;
+   }
+   else if (std::string("eigen_float").find(arg1) == 0)
+   {
+      test_func_name = "eigen_float";
+      return eigen_float::joinTwo;
+   }
+   else if (std::string("eigen_as_orig").find(arg1) == 0)
+   {
+      test_func_name = "eigen_as_orig";
+      return eigen_as_orig::joinTwo;
+   }
+   else if (std::string("eigen_unpacked").find(arg1) == 0)
+   {
+      test_func_name = "eigen_unpacked";
+      return eigen_unpacked::joinTwo;
    }
    else // The arg1 value does not match any valid value. Use default
    {
