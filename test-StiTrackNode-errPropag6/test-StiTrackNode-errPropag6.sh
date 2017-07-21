@@ -5,14 +5,14 @@ RESULT_CSV=~/my-tests/test-StiTrackNode-errPropag6/results.csv
 
 # Declare array of cxx options to test
 CXX_OPTIONS=(
-    "-march=native -O2 -m32 -mno-avx"
-    "-march=native -O2 -m64 -mno-avx"
-    "-march=native -O2 -m32 -mavx"
-    "-march=native -O2 -m64 -mavx"
-    "-march=native -O3 -m32 -mno-avx"
-    "-march=native -O3 -m64 -mno-avx"
     "-march=native -O2 -m32 -fno-tree-vectorize -D EIGEN_DONT_VECTORIZE"
+    "-march=native -O2 -m32 -mavx"
+    "-march=native -O2 -m32 -mno-avx"
+    "-march=native -O3 -m32 -mno-avx"
     "-march=native -O2 -m64 -fno-tree-vectorize -D EIGEN_DONT_VECTORIZE"
+    "-march=native -O2 -m64 -mavx"
+    "-march=native -O2 -m64 -mno-avx"
+    "-march=native -O3 -m64 -mno-avx"
 )
 
 BUILD_DIRS=()
@@ -23,10 +23,16 @@ ARGS3=( -1 )
 
 
 echo "The following variables are set:"
-echo -e "\t ARGS1:      ${ARGS1[*]}"
-echo -e "\t ARGS3:      ${ARGS3[*]}"
+echo -e "\t TEST_DIR:      ${TEST_DIR}"
+echo -e "\t RESULT_CSV:    ${RESULT_CSV}"
+echo -e "\t ARGS1:         ${ARGS1[*]}"
+echo -e "\t ARGS3:         ${ARGS3[*]}"
 
 
+#
+# Create build directories for all sets of compiler flags specified in global
+# $CXX_OPTIONS
+#
 function make_build_dirs
 {
     cd $TEST_DIR
@@ -72,7 +78,10 @@ function run_build
 }
 
 
-# Accepts an array of values, e.g. "11 22 33 44 55 66"
+#
+# Accepts an array of values, e.g. "11 22 33 44 55 66" and calculates its
+# basic statistical properties by means of `awk`.
+#
 function calc_stats()
 {
     local arr=("$@")
@@ -149,6 +158,8 @@ function run_tests
 # The main part starts here
 
 make_build_dirs
+
+# This step can be skipped if it is not the first time the script is run
 run_build
 
 # Requires at least 2 measurements to calculate statistics
