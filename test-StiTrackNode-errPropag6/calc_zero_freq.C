@@ -1,4 +1,3 @@
-
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -6,12 +5,15 @@
 #include "TROOT.h"
 
 
-TCanvas  canvas("canvas", "canvas", 1200, 800);
-
 TH1D  h_G_zer("h_G_zer", "h_G_zer", 21, 0, 21);
 TH1D  h_F_zer("h_F_zer", "h_F_zer", 36, 0, 36);
 
 
+/**
+ * This macro can be used to produce a csv file with values sampling the input
+ * to StiTrackNode::errPropag6(). The values are extracted from a ROOT tree
+ * saved in a file.
+ */
 void calc_zero_freq(std::string fileName)
 {
    TFile file_in(fileName.c_str(), "READ");
@@ -56,12 +58,8 @@ void calc_zero_freq(std::string fileName)
    }
 
    h_G_zer.Scale(1./tree_in->GetEntries());
-   h_G_zer.Draw();
    h_G_zer.Print("all");
-   canvas.SaveAs("h_G_zer.png");
 
    h_F_zer.Scale(1./tree_in->GetEntries());
-   h_F_zer.Draw();
    h_F_zer.Print("all");
-   canvas.SaveAs("h_F_zer.png");
 }

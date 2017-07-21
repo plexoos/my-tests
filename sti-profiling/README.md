@@ -6,7 +6,7 @@ Profiling of `StiMaker::Make()` in `libStiMaker.so` is done by using the
 the `Make()` calls properly isolated (need a reference to the corresponding
 branch in `star-sti`).
 
-[<img src="call_graph_StiMaker_thumb.png" />](call_graph_StiMaker.pdf)
+[<img src="call_graph_StiMaker_thumb.png" width="75%"/>](call_graph_StiMaker.pdf)
 
 The sampling data collected with `callgrind` show that the following two
 functions use significant franctions of the total time spent in the
@@ -15,8 +15,8 @@ functions use significant franctions of the total time spent in the
 - `StiTrackNode::errPropag6(...)` ~10%
 - `StiTrackNodeHelper::joinTwo(...)` ~30%
 
-<img src="call_graph_joinTwo.png" height="250" />
-<img src="call_graph_errPropag6.png" height="150" />
+<img src="call_graph_joinTwo.png" width="40%" />
+<img src="call_graph_errPropag6.png" width="20%" />
 
 From the reconstruction job log file it appears ~80% of the total time is spent
 in `StiMaker::Make()`.
@@ -181,10 +181,10 @@ The plot below shows the time spent in the function for a set of `f` values
 ranging from 0.1 to 0.9. The first point at f = 0 corresponds to the measured
 rate for realistic simulation.
 
-<iframe width="800" height="600" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/2.embed">
-  <a href="https://plot.ly/~plexoos/2/?share_key=utCiob32MBUoBG1UjixSzm" target="_blank">
-  <img src="https://plot.ly/~plexoos/2.png?share_key=utCiob32MBUoBG1UjixSzm" style="max-width: 100%;"  width="800"/>
-  </a>
+<iframe width="90%" height="500" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/2.embed">
+<a href="https://plot.ly/~plexoos/2" target="_blank">
+<img src="https://plot.ly/~plexoos/2.png" width="90%"/>
+</a>
 </iframe>
 
 40% gain in speed when switching from `orig` to `eigen`
@@ -193,10 +193,10 @@ rate for realistic simulation.
 
 Comparison of various benchmark tests with different compiler options.
 
-<iframe width="1000" height="600" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/40.embed">
-  <a href="https://plot.ly/~plexoos/40/?share_key=grVSvcTNKEAy7jnWrz0seV" target="_blank">
-  <img src="https://plot.ly/~plexoos/40.png?share_key=grVSvcTNKEAy7jnWrz0seV" style="max-width: 100%;"  width="1000"/>
-  </a>
+<iframe width="90%" height="600" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/40.embed">
+<a href="https://plot.ly/~plexoos/40" target="_blank">
+<img src="https://plot.ly/~plexoos/40.png" width="90%"/>
+</a>
 </iframe>
 
 
@@ -235,13 +235,13 @@ below for details.
 For realistic simulation we sampled inputs from 10k calls during reconstruction
 of a single real event.
 
-Frequency of zeros in F matrix by element index
+Frequency of zeros in F and G matrices by element index
 
-![h_F_zero_rate.png](https://plexoos.github.io/my-tests/test-StiTrackNode-errPropag6/h_F_zero_rate.png)
-
-Frequency of zeros in G matrix by element index
-
-![h_G_zero_rate.png](https://plexoos.github.io/my-tests/test-StiTrackNode-errPropag6/h_G_zero_rate.png)
+<iframe width="90%" height="400" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/45.embed">
+<a href="https://plot.ly/~plexoos/45/" target="_blank">
+<img src="https://plot.ly/~plexoos/45.png" width="90%"/>
+</a>
+</iframe>
 
 
 ### Input raw data file
