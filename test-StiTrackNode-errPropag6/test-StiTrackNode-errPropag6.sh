@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 TEST_DIR=~/my-tests
+RESULT_CSV=~/my-tests/test-StiTrackNode-errPropag6/results.csv
 
 # Declare array of cxx options to test
 CXX_OPTIONS=(
@@ -100,27 +101,46 @@ function calc_stats()
 
 function run_tests
 {
+    n_meas=$1
+
+    printf "$(date)\n" | tee -a ${RESULT_CSV}
+    printf "n_meas: $n_meas\n\n" | tee -a ${RESULT_CSV}
+
     for index in ${!CXX_OPTIONS[*]}
     do
         BUILD_DIR=${BUILD_DIRS[$index]}
+
+        # The commans should match the csv_output format below
+        #printf "test, , , $BUILD_DIR, sigma, \n" >> ${RESULT_CSV}
+        printf "test, $BUILD_DIR, sigma, \n" >> ${RESULT_CSV}
 
         for ARG1 in "${ARGS1[@]}"
         do
            for ARG3 in "${ARGS3[@]}"
            do
-              cmd="${BUILD_DIR}/test-StiTrackNode-errPropag6 ${ARG1} -1 ${ARG3} &>> ${BUILD_DIR}/log"
+              cmd="${BUILD_DIR}/test-StiTrackNode-errPropag6 ${ARG1} -1 ${ARG3}"  # &>> ${BUILD_DIR}/log"
 
-              echo $cmd >> ${BUILD_DIR}/log
+              printf "$ $cmd\n"
 
-              echo "Running cmd:"
-              echo "$ $cmd"
-              eval "$cmd"
-              echo
+              # Create array of measurements
+              time_meas=()
 
-              echo >> ${BUILD_DIR}/log
+              for (( i=1; i<=${n_meas}; i++ ))
+              do
+                 time_meas+=( $( $cmd ) )
+              done
+
+              stats=( $(calc_stats ${time_meas[@]}) )
+
+              # Print average and variance
+              #csv_output="$ARG1, $ARG3, $n_meas, ${stats[2]}, ${stats[3]}, "
+              csv_output="$ARG1, ${stats[2]}, ${stats[3]}, "
+              printf "$csv_output\n" | tee -a ${RESULT_CSV}
 
            done
         done
+
+        printf "\n" | tee -a ${RESULT_CSV}
 
     done
 }
@@ -130,4 +150,6 @@ function run_tests
 
 make_build_dirs
 run_build
-run_tests
+
+# Requires at least 2 measurements to calculate statistics
+run_tests 10
