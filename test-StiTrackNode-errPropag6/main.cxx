@@ -160,12 +160,9 @@ tested_function_t process_arg1(const char *arg, std::string& test_func_name)
 
 int process_arg2(const char *arg)
 {
-   int arg2 = std::atoi(arg) - 1;
+   int arg2 = std::atoi(arg);
 
-   if (arg2 < 0)
-      std::cout << "ERROR: arg2 ignored\n";
-
-   return (arg2 < 0 ? 1000000 : arg2+1);
+   return (arg2 <= 0 ? 1000000 : arg2+1);
 }
 
 
