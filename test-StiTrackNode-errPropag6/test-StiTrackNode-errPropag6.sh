@@ -71,6 +71,33 @@ function run_build
 }
 
 
+# Accepts an array of values, e.g. "11 22 33 44 55 66"
+function calc_stats()
+{
+    local arr=("$@")
+    local arr_string=${arr[*]}
+
+    local stats=$(awk -v var="$arr_string" 'BEGIN{
+      split(var, values," ");
+
+      n = length(values);
+      min = max = sum = values[1];       # Initialize to the first value (2nd field)
+      sum2 = values[1] * values[1];     # Running sum of squares
+
+      for (i = 2; i <= n; i++) {
+        if (values[i] < min) min = values[i];    # Current minimum
+        if (values[i] > max) max = values[i];    # Current maximum
+        sum  += values[i];                         # Running sum of values
+        sum2 += values[i] * values[i];           # Running sum of squares
+      }
+
+      print  min, max, sum/n, sqrt( ( sum2 - (sum*sum)/n )/(n-1) )
+    }')
+
+    echo $stats
+}
+
+
 function run_tests
 {
     for index in ${!CXX_OPTIONS[*]}
