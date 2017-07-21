@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 TEST_DIR=~/my-tests
-RESULT_DIR=~/my-tests/test-StiTrackNode-errPropag6/results
 
 # Declare array of cxx options to test
 CXX_OPTIONS=(
@@ -100,23 +99,8 @@ function run_tests
 }
 
 
-function extract_result
-{
-    for BUILD_DIR in "${BUILD_DIRS[@]}"
-    do
-        cmd="grep elapsed ${BUILD_DIR}/log > ${RESULT_DIR}/${BUILD_DIR}.csv"
-
-        echo "Running cmd:"
-        echo "$ $cmd"
-        eval "$cmd"
-        echo
-    done
-}
-
-
 # The main part starts here
 
 make_build_dirs
 run_build
 run_tests
-extract_result
