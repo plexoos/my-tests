@@ -1,5 +1,5 @@
 STAR Tracking (Sti) Optimization Studies
-----------------------------------------
+========================================
 
 Profiling of `StiMaker::Make()` in `libStiMaker.so` is done by using the
 `callgrind` tool. We reconstruct ten events from a \*.daq file (Run 17) keeping
@@ -63,6 +63,16 @@ end   Fri Apr 28 14:16:36 EDT 2017
 Alternative Implementations
 ===========================
 
+In the following tests we use:
+
+* Eigen 3.3.3 (67e894c6cd8f)
+* gcc 4.8.2
+* SMatrix classes from ROOT 5.34.30
+
+Unless noted all proposed alternative implementations conform to the same
+original interface. We also make sure that the returned results are identical
+to the existing Sti functions for the same input.
+
 
 errPropag6
 ----------
@@ -80,7 +90,7 @@ errPropag6
 * [eigen.h](../test-StiTrackNode-errPropag6/eigen.h) - Vectorized calculation based on `Eigen` library
 
 
-joinTwo (in progress)
+joinTwo
 -------
 
 Various implementations of `StiTrackNodeHelper::joinTwo(...)`
@@ -105,6 +115,11 @@ Benchmarking
 We benchmark the above versions of the `StiTrackNode::errPropag6(...)` and
 `StiTrackNodeHelper::joinTwo(...)` functions with 10,000,000 iterations.
 
+Relevant CPU info:
+
+    model name      : Intel(R) Xeon(R) CPU E5-1607 v2 @ 3.00GHz
+    flags           : ...  sse sse2 ... ssse3 ... sse4_1 sse4_2 ... avx ...
+
 
 How to build
 ------------
@@ -114,8 +129,7 @@ To compile the tests do:
     $ cd my-tests
     $ mkdir build && cd build
     $ cmake -D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ \
-            -D CMAKE_CXX_FLAGS="-march=native <cxx_flags> -D NDEBUG" \
-            -D CMAKE_BUILD_TYPE=Release ../
+            -D CMAKE_CXX_FLAGS="<cxx_flags> -D NDEBUG" ../
     $ cmake --build ./ -- VERBOSE=1
 
 A desired target may be specified, e.g.:
@@ -204,6 +218,55 @@ joinTwo
 -------
 
 Comming soon.
+
+
+test-eigen
+----------
+
+This is a test to calculate the inverse of 6x6 matrices using Eigen. For details
+see code in [test-eigen-inverse.cxx](test-eigen-inverse.cxx)
+
+<iframe width="90%" height="600" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/47.embed">
+<a href="https://plot.ly/~plexoos/47" target="_blank">
+<img src="https://plot.ly/~plexoos/47.png" width="90%"/>
+</a>
+</iframe>
+
+* 6x6 matrices appear to be very small to show the difference between SSE and
+AVX for single precision
+
+* Additional tests with 100x100 and 180x180 (max size constrained by the stack
+size) matrices showed 15% and 20% respective gains for AVX vs SSE
+
+
+
+Summary and open questions
+==========================
+
+* In general, packed symmetric matrices are not good for vectorization.
+Currently, we don't see much evidence to confirm significant impact of
+packing/unpacking on the overall performance
+
+* In all proposed alternative implementations of existing Sti functions we make
+sure that the returned results are identical for the same input
+
+* 64-bit builds seem to give a substantial gain in speed. What exactly prevents
+us from building 64-bit libraries for STAR reconstruction?
+
+* Switching to single precision in vectorized calculations can potentially
+reduce the processing time by another factor. Which calculations in Sti require
+double precision?
+
+* `StiTrackNodeHelper::joinVtx()` did not show in the call graph for the tested
+sample. Is it called by `StiMaker::Make()`?
+
+* In these tests we take advantage of the vectorization implemented in Eigen for
+matrix operations, i.e. the "inner loop". But is there a way or trick to help
+Eigen to vectorize the "outer loop" over matrix instances even at a cost of data
+re-packing? 
+
+* Test other compilers? clang, gcc 5/6/7...
+
 
 
 Appendix
