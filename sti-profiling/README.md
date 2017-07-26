@@ -12,8 +12,8 @@ The sampling data collected with `callgrind` show that the following two
 functions use significant franctions of the total time spent in the
 `StiMaker::Make()` routine:
 
-- `StiTrackNode::errPropag6(...)` ~10%
-- `StiTrackNodeHelper::joinTwo(...)` ~30%
+- `StiTrackNode::errPropag6()` ~10%
+- `StiTrackNodeHelper::joinTwo()` ~30%
 
 <img src="call_graph_joinTwo.png" width="40%" />
 <img src="call_graph_errPropag6.png" width="20%" />
@@ -63,6 +63,9 @@ end   Fri Apr 28 14:16:36 EDT 2017
 Alternative Implementations
 ===========================
 
+Currently most matrix operations in Sti are implemented using the old TCL
+library available in ROOT
+
 In the following tests we use:
 
 * Eigen 3.3.3 (67e894c6cd8f)
@@ -76,6 +79,9 @@ to the existing Sti functions for the same input.
 
 errPropag6
 ----------
+
+This function calculates the matrix product `B = ASA^T` where A, S are 6x6
+matrices, S is a symmetric matrix
 
 
 * [orig.h](../test-StiTrackNode-errPropag6/orig.h) - The original version used in Sti
@@ -93,27 +99,46 @@ errPropag6
 joinTwo
 -------
 
-Various implementations of `StiTrackNodeHelper::joinTwo(...)`
+This function calculates the weighted average of two multi-dimensional vectors
+
+    M = (W_1 + W_2)^-1 (W_1 * X_1 + W_2 * X_2)
+    W = (W_1 + W_2)^-1
+    chi2 = ...
+
+Various implementations of `StiTrackNodeHelper::joinTwo()`
 
 * [orig.h](../test-StiTrackNodeHelper-joinTwo/orig.h) - The original version
 used in Sti. <strong>Assumptions are made about the relative error size of the two
 measurements. The averaging formula seems to be simplified base on the
 assumption.</strong>
 
-* [eigen_as_orig.h](../test-StiTrackNodeHelper-joinTwo/eigen_as_orig.h) - Vectorized implementation based on
-`Eigen` library. The implementation follows the original one in `orig.h`
+* [eigen.h](../test-StiTrackNodeHelper-joinTwo/eigen.h) - Vectorized
+implementation based on `Eigen` library. The implementation follows the
+original one in `orig.h`. This function assumes unpacked input data
 
-* [eigen.h](../test-StiTrackNodeHelper-joinTwo/eigen.h) - Similar to `eigen_as_orig.h` but implements the averaging
-formula directly, i.e.
+* [eigen_packed.h](../test-StiTrackNodeHelper-joinTwo/eigen_packed.h) - Similar
+to `eigen.h` but unpacks the symmetric input matrices
 
-    M = (W_1 + W_2)^-1 (W_1 * X_1 + W_2 * X_2)
+* [eigen_packed_float.h](../test-StiTrackNodeHelper-joinTwo/eigen_packed_float.h) - Similar
+to `eigen_packed.h`, in addition casts the newly created unpacked data to
+single precision
+
 
 
 Benchmarking
 ============
 
-We benchmark the above versions of the `StiTrackNode::errPropag6(...)` and
-`StiTrackNodeHelper::joinTwo(...)` functions with 10,000,000 iterations.
+We benchmark the above versions of the `StiTrackNode::errPropag6()` and
+`StiTrackNodeHelper::joinTwo()` functions by calling them in a large number
+of iterations.
+
+We focus on vectorized implementation of matrix operations by Eigen and SMatrix.
+Vectorization in CPUs use large registers to perform simultaneous arithmetic
+operations on several scalar values.
+
+    128 bit registers in SSE: 2 double or 4 single precision (float) scalars
+    256 bit registers in AVX: 4 double or 8 single precision (float) scalars
+    512 bit registers in AVX2
 
 Relevant CPU info:
 
@@ -154,10 +179,10 @@ Another `gcc` option to try is `-ffast-math` but it can give significantly
 different numerical results.
 
 
-Running tests for errPropag6(...)
+Running tests for errPropag6()
 ---------------------------------
 
-Benchmark one of the `StiTrackNode::errPropag6(...)` implementations by running
+Benchmark one of the `StiTrackNode::errPropag6()` implementations by running
 the test as:
 
     $ test-StiTrackNode-errPropag6 <test_func_name> <n_iterations> <freq_of_zeros> <verbosity>
@@ -170,11 +195,11 @@ with the following values
     <verbosity>:       Verbosity level: v[0-9] , (default: v1)
 
 
-Running tests for joinTwo(...)
+Running tests for joinTwo()
 ---------------------------------
 
-Different implementations of `StiTrackNodeHelper::joinTwo(...)` can be
-benchmarked similar to `StiTrackNode::errPropag6(...)`
+Different implementations of `StiTrackNodeHelper::joinTwo()` can be
+benchmarked similar to `StiTrackNode::errPropag6()`
 
     $ test-StiTrackNodeHelper-joinTwo <test_func_name> <n_iterations> <verbosity>
 
@@ -191,6 +216,18 @@ Results
 errPropag6
 ----------
 
+Comparison of various benchmark tests with different compiler options.
+
+<iframe width="90%" height="600" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/40.embed">
+<a href="https://plot.ly/~plexoos/40" target="_blank">
+<img src="https://plot.ly/~plexoos/40.png" width="90%"/>
+</a>
+</iframe>
+
+40% gain in speed when switching from `orig` to `eigen`
+
+<!--27% gain in speed when switching from `orig` to `smatrix` or `orig_no_branch`-->
+
 The plot below shows the time spent in the function for a set of `f` values
 ranging from 0.1 to 0.9. The first point at f = 0 corresponds to the measured
 rate for realistic simulation.
@@ -201,30 +238,34 @@ rate for realistic simulation.
 </a>
 </iframe>
 
-40% gain in speed when switching from `orig` to `eigen`
-
-27% gain in speed when switching from `orig` to `smatrix` or `orig_no_branch`
-
-Comparison of various benchmark tests with different compiler options.
-
-<iframe width="90%" height="600" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/40.embed">
-<a href="https://plot.ly/~plexoos/40" target="_blank">
-<img src="https://plot.ly/~plexoos/40.png" width="90%"/>
-</a>
-</iframe>
-
 
 joinTwo
 -------
 
-Comming soon.
+Comparison of various benchmark tests with different compiler options.
+
+<iframe width="90%" height="600" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/50.embed">
+<a href="https://plot.ly/~plexoos/50" target="_blank">
+<img src="https://plot.ly/~plexoos/50.png" width="90%"/>
+</a>
+</iframe>
+
+20% gain in speed when switching from `orig` to `eigen_packed`
+
+22% gain in speed when switching from `orig` to `eigen_packed_float`
+
+For single precision case, need to reconfirm the effect on the output w.r.t.
+the double precision case
 
 
 test-eigen
 ----------
 
-This is a test to calculate the inverse of 6x6 matrices using Eigen. For details
-see code in [test-eigen-inverse.cxx](test-eigen-inverse.cxx)
+This is a test to calculate the inverse of 6x6 matrices using Eigen
+
+    C = (A + B)^-1
+
+<!--For details see code in [test-eigen-inverse.cxx](test-eigen-inverse.cxx)-->
 
 <iframe width="90%" height="600" frameborder="0" scrolling="yes" src="//plot.ly/~plexoos/47.embed">
 <a href="https://plot.ly/~plexoos/47" target="_blank">
@@ -240,8 +281,15 @@ size) matrices showed 15% and 20% respective gains for AVX vs SSE
 
 
 
-Summary and open questions
-==========================
+Summary and Outlook
+===================
+
+* Milestone #1 (80% complete, 100% in 1-2 weeks): 
+
+  - Benchmark different (vectorized) implementations of top time consuming Sti
+    functions
+  - Time a typical reconstruction job with new proposed implementations
+  - Confirm projected gain in speed (0.30 x 0.20 + 0.10 x 0.40) x 0.80 = 0.08
 
 * In general, packed symmetric matrices are not good for vectorization.
 Currently, we don't see much evidence to confirm significant impact of
@@ -265,6 +313,27 @@ matrix operations, i.e. the "inner loop". But is there a way or trick to help
 Eigen to vectorize the "outer loop" over matrix instances even at a cost of data
 re-packing? 
 
+
+
+Open questions and to-do list
+=============================
+
+* Plug-in tested implementations (e.g. using Eigen) in Sti code and time a real
+reconstruction job
+
+* Produce a call graph for event reconstruction with StiCA
+
+* Other functions for potential refactoring are: `StiNodeErrs::zign()`,
+`StiNodeErrs::recov()`
+
+* Add implementation of `StiTrackNodeHelper::joinTwo()` with SMatrix. This
+should be similar to the case of `StiTrackNode::errPropag6()`
+
+* Need to sample inputs to `StiTrackNodeHelper::joinTwo()` from real events.
+Again, this is similar to what was done for `StiTrackNode::errPropag6()` (see
+[Estimating rate of zero matrix elements](#estimating-rate-of-zero-matrix-elements)).
+Even better if we sample the hit (StiHit) and node (StiNodeErrs) error matrices.
+
 * Test other compilers? clang, gcc 5/6/7...
 
 
@@ -283,9 +352,9 @@ errPropag6
 ----------
 
 * `main-errPropag6-vs-trasat-output.cxx` compares the output of `errPropag6()`
-to that of `TCL::trasat()`. Both functions are supposed to calculate the matrix
-operation given by `ASA^T` with A, S, and A^T being 6x6 matrices. The test can
-be compiled at ideone (http://ideone.com/tI1MgY) or by simply doing:
+to that of `TCL::trasat()`. Both functions calculate the matrix operation given
+by `ASA^T` with A, S, and A^T being 6x6 matrices. The test can be compiled at
+ideone (http://ideone.com/tI1MgY) or by simply doing:
 
     $ g++ -std=c++11 main-errPropag6-vs-trasat-output.cxx
 
@@ -309,4 +378,18 @@ Frequency of zeros in F and G matrices by element index
 
 ### Input raw data file
 
-    st_physics_18069061_raw_2000021.daq
+The processing options and the input file used in this test
+
+    $ root4star -l -b -q 'bfc.C(1, 10, "pp2017, btof, mtd, pp2pp, fmsDat, fmsPoint, fpsDat, BEmcChkStat, QAalltrigs, CorrX, OSpaceZ2, OGridLeak3D, -hitfilt", "<input_daq_file>")'
+
+    <input_daq_file> = st_physics_18069061_raw_2000021.daq
+
+Second iteration with official options (20 events):
+
+"auau 200GeV run 2016 st_hlt production for the second period after run number 17062047 with StiCA and without HFT tracking"
+
+    DbV20161001 P2016a StiCA mtd mtdCalib btof picoWrite PicoVtxVpd BEmcChkStat -evout CorrX OSpaceZ2 OGridLeak3D -hitfilt
+
+    DbV20161001 P2016a Sti   mtd mtdCalib btof picoWrite PicoVtxVpd BEmcChkStat -evout CorrX OSpaceZ2 OGridLeak3D -hitfilt
+
+    <input_daq_file> = st_physics_17072001_raw_3500002.daq
