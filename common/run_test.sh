@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
+#
+# $ run_test.sh <test_name>
+#
+# <test_name>:
+#    
+#    test-StiTrackNode-errPropag6
+#    test-StiTrackNodeHelper-joinTwo
+#
 
 TEST_DIR=~/my-tests
-RESULT_CSV=~/my-tests/test-StiTrackNode-errPropag6/results.csv
+TEST_NAME=$1
+RESULT_CSV=~/my-tests/${TEST_NAME}/results.csv
 
 # Declare array of cxx options to test
 CXX_OPTIONS=(
@@ -17,7 +26,7 @@ CXX_OPTIONS=(
 
 BUILD_DIRS=()
 
-ARGS1=( "eigen" "smatrix" "trasat" "orig" "orig_no_branch" )
+ARGS1=( "orig" "orig_no_branch" "trasat" "smatrix" "eigen" )
 #ARGS3=( -1 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 )
 ARGS3=( -1 )
 
@@ -69,7 +78,7 @@ function run_build
         echo "$ $cmd"
         eval $cmd
 
-        cmd="cmake --build . --target test-StiTrackNode-errPropag6 -- VERBOSE=1"
+        cmd="cmake --build . --target ${TEST_NAME} -- VERBOSE=1"
         echo "$ $cmd"
         eval $cmd
 
@@ -127,7 +136,7 @@ function run_tests
         do
            for ARG3 in "${ARGS3[@]}"
            do
-              cmd="${BUILD_DIR}/test-StiTrackNode-errPropag6 ${ARG1} -1 ${ARG3}"  # &>> ${BUILD_DIR}/log"
+              cmd="${BUILD_DIR}/${TEST_NAME} ${ARG1} -1 ${ARG3}"  # &>> ${BUILD_DIR}/log"
 
               printf "$ $cmd\n"
 
