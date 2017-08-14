@@ -67,13 +67,10 @@ int main(int argc, char **argv)
       fill_G(myG, zero_freq);
       fill_F(myF, zero_freq);
 
-      DEBUG_CODE(
-
-      std::cout << "\nIteration: #" << i+1 << "\n"
-                << "input:\n";
-      print(myG, myF);
-
-      );
+      if (verbosity > 2) {
+         std::cout << "\nIteration: #" << i+1 << "\ninput:\n";
+         print(myG, myF);
+      }
 
       // Adjustments for original errPropag6
       if (test_func == orig::errPropag6 || test_func == orig_no_branch::errPropag6)
@@ -90,12 +87,10 @@ int main(int argc, char **argv)
       if (test_func == orig::errPropag6 || test_func == orig_no_branch::errPropag6)
          for (int jk=0; jk<6; jk++) { myF[jk][jk] += 1; }
 
-      DEBUG_CODE(
-
-      std::cout << "output:\n";
-      print(myG, myF);
-
-      );
+      if (verbosity > 2) {
+         std::cout << "output:\n";
+         print(myG, myF);
+      }
 
       tools::time_add(time_accum, tools::time_diff(time_0, time_1) );
    }

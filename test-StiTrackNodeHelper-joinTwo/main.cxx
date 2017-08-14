@@ -62,14 +62,11 @@ int main(int argc, char **argv)
       simulate_measurement(P1, E1);
       simulate_measurement(P2, E2);
 
-      DEBUG_CODE(
-
-      std::cout << "\nIteration: #" << i+1 << "\n"
-                << "input:\n";
-      print_measurement(P1, E1);
-      print_measurement(P2, E2);
-
-      );
+      if (verbosity > 2) {
+         std::cout << "\nIteration: #" << i+1 << "\ninput:\n";
+         print_measurement(P1, E1);
+         print_measurement(P2, E2);
+      }
 
       // Perform the actual measurement
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_0);
@@ -78,13 +75,10 @@ int main(int argc, char **argv)
 
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_1);
 
-      DEBUG_CODE(
-
-      std::cout << "output:\n"
-                << "chi2: " << chi2 << "\n";
-      print_measurement(PJ, EJ);
-
-      );
+      if (verbosity > 2) {
+         std::cout << "output:\n" << "chi2: " << chi2 << "\n";
+         print_measurement(PJ, EJ);
+      }
 
       tools::time_add(time_accum, tools::time_diff(time_0, time_1) );
    }
