@@ -37,14 +37,13 @@ int main(int argc, char **argv)
    // Process 2nd optional argument
    const int n_iterations = tools::process_arg_absi(argc > 2 ? argv[2] : "500000");
 
-   // Process optional argument: verbosity level
+   // Process 3rd optional argument
    const int verbosity = tools::process_arg_verb(argc > 3 ? argv[3] : "v1");
 
    if (verbosity > 1)
    {
-      std::cout << "DEBUG?:       " << NDEBUG_STR << "\n"
-                << "test_case:    " << test_func_name << "\n"
-                << "n_iterations: " << n_iterations << "\n";
+      std::cout << "test_func_name:  " << test_func_name << "\n"
+                << "n_iterations:    " << n_iterations << "\n";
    }
 
 
@@ -93,10 +92,10 @@ int main(int argc, char **argv)
    // Print out final result based on verbosity level
    if (verbosity > 1)
       std::cout << "elapsed time: " << test_func_name << ", "
-                << time_accum.tv_sec << "." << time_accum.tv_nsec << ", " << std::endl;
+                << time_accum.tv_sec << "." << time_accum.tv_nsec << ", \n";
    else if (verbosity > 0)
       std::cout << std::setprecision(10)
-                << time_accum.tv_sec*1000 + time_accum.tv_nsec/1000000. << std::endl;
+                << time_accum.tv_sec*1000 + time_accum.tv_nsec/1000000. << "\n";
    else {}
 
    return EXIT_SUCCESS;

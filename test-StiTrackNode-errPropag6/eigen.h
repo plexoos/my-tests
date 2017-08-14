@@ -7,8 +7,6 @@
 namespace eigen
 {
 
-using namespace Eigen;
-
 
 /**
  * This function updates the contents of the G array
@@ -26,15 +24,10 @@ void errPropag6( double G[21],const double F[6][6],int nF )
     G[15], G[16], G[17], G[18], G[19], G[20]
   };
 
+  using namespace Eigen;
+
   Map< const Matrix<double, 6, 6, RowMajor> >  F_m( &F[0][0] );
   Map< Matrix<double, 6, 6, RowMajor> >  G_m( G_full );
-     
-  // F_m * G_m * F_m.transpose();
-  //
-  //G_m.applyOnTheRight(F_m.transpose());
-  //G_m.applyOnTheLeft(F_m);
-  //
-  //G_m = (F_m * (G_m * F_m.transpose()).eval()).eval();
 
   G_m = F_m * G_m * F_m.transpose();
 

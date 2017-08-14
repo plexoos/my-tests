@@ -79,7 +79,7 @@ function run_build
         echo "$ $cmd"
         eval $cmd
 
-        cmd="cmake --build . --target ${TEST_NAME} -- VERBOSE=1"
+        cmd="cmake --build . --target ${TEST_NAME}"
         echo "$ $cmd"
         eval $cmd
 
