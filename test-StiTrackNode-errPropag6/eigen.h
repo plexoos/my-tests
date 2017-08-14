@@ -13,6 +13,11 @@ namespace eigen
  */
 void errPropag6( double G[21],const double F[6][6],int nF )
 {
+  // Create a copy of F to be modified. Unfortunately, this has to be done to
+  // modify the input matrix F by adding an identity matrix.
+  enum {NP = 6};
+  double F_copy[NP][NP];
+  memcpy(F_copy, F, sizeof(F_copy));
 
   double G_full[36] =
   {
@@ -26,8 +31,10 @@ void errPropag6( double G[21],const double F[6][6],int nF )
 
   using namespace Eigen;
 
-  Map< const Matrix<double, 6, 6, RowMajor> >  F_m( &F[0][0] );
+  Map< Matrix<double, 6, 6, RowMajor> >  F_m( &F_copy[0][0] );
   Map< Matrix<double, 6, 6, RowMajor> >  G_m( G_full );
+
+  F_m += Matrix<double, 6, 6, RowMajor>::Identity();
 
   G_m = F_m * G_m * F_m.transpose();
 

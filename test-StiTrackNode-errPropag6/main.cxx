@@ -72,10 +72,6 @@ int main(int argc, char **argv)
          print(myG, myF);
       }
 
-      // Adjustments for original errPropag6
-      if (test_func == orig::errPropag6 || test_func == orig_no_branch::errPropag6)
-         for (int jk=0; jk<6; jk++) { myF[jk][jk] -= 1; }
-
       // Perform the actual measurement
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_0);
 
@@ -83,9 +79,6 @@ int main(int argc, char **argv)
 
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_1);
 
-      // Adjustments for original errPropag6
-      if (test_func == orig::errPropag6 || test_func == orig_no_branch::errPropag6)
-         for (int jk=0; jk<6; jk++) { myF[jk][jk] += 1; }
 
       if (verbosity > 2) {
          std::cout << "output:\n";
@@ -186,6 +179,13 @@ void fill_F(double (&F)[6][6], double zero_freq)
             F[i][j] = (tools::my_rand(0, 1) <= F_zero_freq[i*6+j]) ? 0 : tools::my_rand(-0.5, 0.5);
          else // a "zero_freq" chance to get a zero element
             F[i][j] = (tools::my_rand(0, 1) < zero_freq) ? 0 : tools::my_rand(-0.5, 0.5);
+
+         if (i != j) continue;
+
+         // Subtract the identity matrix. In the original Sti code `errPropag6`
+         // assumes that 1 is subtracted from the diagnoal elements of the
+         // F matrix
+         F[i][i] -= 1;
       }
    }
 }
