@@ -1,7 +1,6 @@
 #include <iostream>
 #include <iterator>
 #include <string>
-#include <cctype>
 
 #include "common/tools.h"
 #include "test-StiTrackNode-errPropag6/orig.h"
@@ -17,9 +16,6 @@ double F_zero_freq[36];
 using tested_function_t = void (*)(double G[21], const double F[6][6], int nF);
 
 tested_function_t process_arg1(const char *arg, std::string& test_func_name);
-int     process_arg2(const char *arg);
-double  process_arg3(const char *arg);
-int     process_arg4(const char *arg);
 
 void print(const double (&G)[21], const double (&F)[6][6]);
 void fill_G(double (&G)[21], double zero_freq);
@@ -35,13 +31,13 @@ int main(int argc, char **argv)
    tested_function_t test_func = (argc > 1 ? process_arg1(argv[1], test_func_name) : orig::errPropag6);
 
    // Process 2nd optional argument
-   int n_iterations = (argc > 2 ? process_arg2(argv[2]) : 1000000);
+   const int n_iterations = tools::process_arg_absi(argc > 2 ? argv[2] : "1000000");
 
    // Process 3rd optional argument
-   double zero_freq = (argc > 3 ? process_arg3(argv[3]) : -1);
+   const double zero_freq = tools::process_arg_d01(argc > 3 ? argv[3] : "-1");
 
    // Process 4th optional argument
-   int verbosity = (argc > 4 ? process_arg4(argv[4]) : 1);
+   const int verbosity = tools::process_arg_verb(argc > 4 ? argv[4] : "v1");
 
 
    if (verbosity > 1)
@@ -153,43 +149,6 @@ tested_function_t process_arg1(const char *arg, std::string& test_func_name)
       std::cout << "ERROR: arg1 ignored\n";
       test_func_name = "orig";
       return orig::errPropag6;
-   }
-}
-
-
-
-int process_arg2(const char *arg)
-{
-   int arg2 = std::atoi(arg);
-
-   return (arg2 <= 0 ? 1000000 : arg2+1);
-}
-
-
-
-double process_arg3(const char *arg)
-{
-   double arg3 = std::atof(arg);
-
-   if (arg3 == 0)
-      std::cout << "ERROR: arg3 ignored. Enter real number in (0,1] range\n";
-
-   return ( arg3 < 0 || arg3 > 1 ? -1 : arg3);
-}
-
-
-
-int process_arg4(const char *arg)
-{
-   const std::string verbosity(arg);
-
-   if (verbosity.size() == 2 && verbosity[0] == 'v' && isdigit(verbosity[1]))
-   {
-      return std::atoi( &verbosity[1] );
-   }
-   else
-   {
-      return 1;
    }
 }
 

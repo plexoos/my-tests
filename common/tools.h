@@ -1,6 +1,7 @@
 #ifndef common_tools_h
 #define common_tools_h
 
+#include <cctype>
 #include <cstdlib>
 #include <cstdio>
 #include <time.h>
@@ -63,6 +64,45 @@ void time_add(timespec& time_cumul, timespec time_add)
 double my_rand(const double min, const double max)
 {
    return ( std::rand()/(static_cast<double>(RAND_MAX)+1) ) * (max-min) + min;
+}
+
+
+/**
+ * Returns a positive integer extracted from arg string.
+ */
+int process_arg_absi(const char *arg)
+{
+   return !arg ? 0 : std::abs( std::atoi(arg) );
+}
+
+
+/**
+ * Returns a positive real number in (0,1] extracted from arg string or -1 if no
+ * conversion can be performed.
+ */
+double process_arg_d01(const char *arg)
+{
+   double arg3 = std::atof(arg);
+
+   return ( arg3 <= 0 || arg3 > 1 ? -1 : arg3);
+}
+
+
+/**
+ * Expects a string of form "v#" and extracts the number #.
+ */
+int process_arg_verb(const char *arg)
+{
+   const std::string verbosity(arg);
+
+   if (verbosity.size() == 2 && verbosity[0] == 'v' && isdigit(verbosity[1]))
+   {
+      return std::atoi( &verbosity[1] );
+   }
+   else
+   {
+      return 1;
+   }
 }
 
 

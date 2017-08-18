@@ -19,8 +19,6 @@ using tested_function_t = double (*)(int nP1, const double *P1, const double *E1
 
 
 tested_function_t process_arg1(const char *arg, std::string& test_func_name);
-int  process_arg2(const char *arg);
-int  process_arg4(const char *arg);
 
 void simulate_measurement(double (&P)[6], double (&E)[21]);
 void print_measurement(const double (&P)[6], const double (&E)[21]);
@@ -37,10 +35,10 @@ int main(int argc, char **argv)
    tested_function_t test_func = (argc > 1 ? process_arg1(argv[1], test_func_name) : orig::joinTwo);
 
    // Process 2nd optional argument
-   int n_iterations = (argc > 2 ? process_arg2(argv[2]) : 500000);
+   const int n_iterations = tools::process_arg_absi(argc > 2 ? argv[2] : "500000");
 
    // Process optional argument: verbosity level
-   int verbosity = (argc > 3 ? process_arg4(argv[3]) : 1);
+   const int verbosity = tools::process_arg_verb(argc > 3 ? argv[3] : "v1");
 
    if (verbosity > 1)
    {
@@ -140,31 +138,6 @@ tested_function_t process_arg1(const char *arg, std::string& test_func_name)
       std::cout << "ERROR: arg1 ignored\n";
       test_func_name = "orig";
       return orig::joinTwo;
-   }
-}
-
-
-
-int process_arg2(const char *arg)
-{
-   int arg2 = std::atoi(arg) - 1;
-
-   return (arg2 < 0 ? 500000 : arg2+1);
-}
-
-
-
-int process_arg4(const char *arg)
-{
-   const std::string verbosity(arg);
-
-   if (verbosity.size() == 2 && verbosity[0] == 'v' && isdigit(verbosity[1]))
-   {
-      return std::atoi( &verbosity[1] );
-   }
-   else
-   {
-      return 1;
    }
 }
 

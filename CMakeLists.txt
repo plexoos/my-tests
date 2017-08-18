@@ -38,7 +38,7 @@ link_directories( ${ROOT_LIBRARY_DIR} )
 
 
 add_executable(float_vs_double misc/float_vs_double.cxx)
-target_link_libraries(float_vs_double rt)
+target_link_libraries(float_vs_double rt pthread)
 
 add_executable(std_function misc/std_function.cxx)
 add_executable(std_chrono misc/std_chrono.cxx)
