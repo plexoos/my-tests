@@ -26,7 +26,8 @@ CXX_OPTIONS=(
 
 BUILD_DIRS=()
 
-ARGS1=( "orig" "orig_no_branch" "trasat" "smatrix" "eigen" )
+#ARGS1=( "orig" "orig_no_branch" "trasat" "smatrix" "eigen" )
+ARGS1=( "orig" "eigen" "eigen_float" )
 #ARGS3=( -1 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 )
 ARGS3=( -1 )
 
