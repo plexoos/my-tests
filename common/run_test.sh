@@ -26,17 +26,39 @@ CXX_OPTIONS=(
 
 BUILD_DIRS=()
 
+# The following arguments can be test dependent but we combine them into
+# a single string in order to use a common functionality in run_tests()
+
+# Arg test_func_name:
 #ARGS1=( "orig" "orig_no_branch" "trasat" "smatrix" "eigen" )
 ARGS1=( "orig" "eigen" "eigen_float" )
+# Arg n_iterations:
+ARGS2=( "" )
+# Arg zero_freq:
 #ARGS3=( -1 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 )
-ARGS3=( -1 )
+ARGS3=( "" )
+
+COMBO_ARGS=()
 
 
 echo "The following variables are set:"
 echo -e "\t TEST_DIR:      ${TEST_DIR}"
 echo -e "\t RESULT_CSV:    ${RESULT_CSV}"
 echo -e "\t ARGS1:         ${ARGS1[*]}"
+echo -e "\t ARGS2:         ${ARGS2[*]}"
 echo -e "\t ARGS3:         ${ARGS3[*]}"
+
+# Combine arguments into a single string
+for ARG1 in "${ARGS1[@]}"
+do
+   for ARG2 in "${ARGS2[@]}"
+   do
+       for ARG3 in "${ARGS3[@]}"
+       do
+           COMBO_ARGS+=("$ARG1 $ARG2 $ARG3")
+       done
+   done
+done
 
 
 #
@@ -133,30 +155,27 @@ function run_tests
         #printf "test, , , $BUILD_DIR, sigma, \n" >> ${RESULT_CSV}
         printf "test, $BUILD_DIR, sigma, \n" >> ${RESULT_CSV}
 
-        for ARG1 in "${ARGS1[@]}"
+        for COMBO_ARG in "${COMBO_ARGS[@]}"
         do
-           for ARG3 in "${ARGS3[@]}"
-           do
-              cmd="${BUILD_DIR}/${TEST_NAME} ${ARG1} -1 ${ARG3}"  # &>> ${BUILD_DIR}/log"
+            cmd="${BUILD_DIR}/${TEST_NAME} ${COMBO_ARG}"  # &>> ${BUILD_DIR}/log"
 
-              printf "$ $cmd\n"
+            printf "$ $cmd\n"
 
-              # Create array of measurements
-              time_meas=()
+            # Create array of measurements
+            time_meas=()
 
-              for (( i=1; i<=${n_meas}; i++ ))
-              do
-                 time_meas+=( $( $cmd ) )
-              done
+            for (( i=1; i<=${n_meas}; i++ ))
+            do
+               time_meas+=( $( $cmd ) )
+            done
 
-              stats=( $(calc_stats ${time_meas[@]}) )
+            stats=( $(calc_stats ${time_meas[@]}) )
 
-              # Print average and variance
-              #csv_output="$ARG1, $ARG3, $n_meas, ${stats[2]}, ${stats[3]}, "
-              csv_output="$ARG1, ${stats[2]}, ${stats[3]}, "
-              printf "$csv_output\n" | tee -a ${RESULT_CSV}
+            # Print average and variance
+            #csv_output="$COMBO_ARG, $n_meas, ${stats[2]}, ${stats[3]}, "
+            csv_output="$COMBO_ARG, ${stats[2]}, ${stats[3]}, "
+            printf "$csv_output\n" | tee -a ${RESULT_CSV}
 
-           done
         done
 
         printf "\n" | tee -a ${RESULT_CSV}
