@@ -15,7 +15,7 @@ double F_zero_freq[36];
 
 using tested_function_t = void (*)(double G[21], const double F[6][6], int nF);
 
-tested_function_t process_arg1(const char *arg, std::string& test_func_name);
+tested_function_t process_arg_test_func(const char *arg, std::string& test_func_name);
 
 void print(const double (&G)[21], const double (&F)[6][6]);
 void fill_G(double (&G)[21], double zero_freq);
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 {
    // Process 1st optional argument
    std::string       test_func_name("orig");
-   tested_function_t test_func = (argc > 1 ? process_arg1(argv[1], test_func_name) : orig::errPropag6);
+   tested_function_t test_func = process_arg_test_func(argc > 1 ? argv[1] : "orig", test_func_name);
 
    // Process 2nd optional argument
    const int n_iterations = tools::process_arg_absi(argc > 2 ? argv[2] : "1000000");
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 
 
 
-tested_function_t process_arg1(const char *arg, std::string& test_func_name)
+tested_function_t process_arg_test_func(const char *arg, std::string& test_func_name)
 {
    std::string arg1(arg);
 

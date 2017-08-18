@@ -18,7 +18,7 @@ using tested_function_t = double (*)(int nP1, const double *P1, const double *E1
                                                     double *PJ,       double *EJ);
 
 
-tested_function_t process_arg1(const char *arg, std::string& test_func_name);
+tested_function_t process_arg_test_func(const char *arg, std::string& test_func_name);
 
 void simulate_measurement(double (&P)[6], double (&E)[21]);
 void print_measurement(const double (&P)[6], const double (&E)[21]);
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 {
    // Process 1st optional argument
    std::string       test_func_name("orig");
-   tested_function_t test_func = (argc > 1 ? process_arg1(argv[1], test_func_name) : orig::joinTwo);
+   tested_function_t test_func = process_arg_test_func(argc > 1 ? argv[1] : "orig", test_func_name);
 
    // Process 2nd optional argument
    const int n_iterations = tools::process_arg_absi(argc > 2 ? argv[2] : "500000");
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 
 
 
-tested_function_t process_arg1(const char *arg, std::string& test_func_name)
+tested_function_t process_arg_test_func(const char *arg, std::string& test_func_name)
 {
    std::string arg1(arg);
 
