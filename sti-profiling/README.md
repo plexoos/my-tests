@@ -2,6 +2,33 @@
 
 We discuss possible improvements in track reconstruction algorithms.
 
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Alternative Implementations](#alternative-implementations)
+  - [errPropag6()](#errpropag6)
+  - [joinTwo()](#jointwo)
+- [Benchmarking](#benchmarking)
+  - [How to build](#how-to-build)
+  - [Running tests for errPropag6()](#running-tests-for-errpropag6)
+  - [Running tests for joinTwo()](#running-tests-for-jointwo)
+- [Results](#results)
+  - [errPropag6()](#errpropag6-1)
+  - [joinTwo()](#jointwo-1)
+  - [test-eigen](#test-eigen)
+- [Study of Sti re-fitting routine `joinTwo()`](#study-of-sti-re-fitting-routine-jointwo)
+- [Summary and Outlook](#summary-and-outlook)
+- [Open questions and to-do list](#open-questions-and-to-do-list)
+- [Appendix](#appendix)
+  - [errPropag6()](#errpropag6-2)
+    - [Estimating rate of zero matrix elements](#estimating-rate-of-zero-matrix-elements)
+    - [Input raw data file](#input-raw-data-file)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
 Profiling of `StiMaker::Make()` in `libStiMaker.so` is done by using the
 `callgrind` tool. We reconstruct ten events from a \*.daq file (Run 17) keeping
 the `Make()` calls properly isolated (need a reference to the corresponding
@@ -66,6 +93,8 @@ end   Fri Apr 28 14:16:36 EDT 2017
 
 
 
+<a name="alternative-implementations"></a>
+
 # Alternative Implementations
 
 Currently most matrix operations in Sti are implemented using the old TCL
@@ -81,6 +110,8 @@ Unless noted all proposed alternative implementations conform to the same
 original interface. We also make sure that the returned results are identical
 to the existing Sti functions for the same input.
 
+
+<a name="errpropag6"></a>
 
 ## errPropag6()
 
@@ -99,6 +130,8 @@ matrices, S is a symmetric matrix
 
 * [eigen.h](../test-StiTrackNode-errPropag6/eigen.h) - Vectorized calculation based on `Eigen` library
 
+
+<a name="jointwo"></a>
 
 ## joinTwo()
 
@@ -128,6 +161,8 @@ single precision
 
 
 
+<a name="benchmarking"></a>
+
 # Benchmarking
 
 We benchmark the above versions of the `StiTrackNode::errPropag6()` and
@@ -147,6 +182,8 @@ Relevant CPU info:
     model name      : Intel(R) Xeon(R) CPU E5-1607 v2 @ 3.00GHz
     flags           : ...  sse sse2 ... ssse3 ... sse4_1 sse4_2 ... avx ...
 
+
+<a name="how-to-build"></a>
 
 ## How to build
 
@@ -180,6 +217,8 @@ Another `gcc` option to try is `-ffast-math` but it can give significantly
 different numerical results.
 
 
+<a name="running-tests-for-errpropag6"></a>
+
 ## Running tests for errPropag6()
 
 Benchmark one of the `StiTrackNode::errPropag6()` implementations by running
@@ -194,6 +233,8 @@ with the following values
     <freq_of_zeros>:   A real number f: f = (0, 1] or f <= 0 for realistic simulation
     <verbosity>:       Verbosity level: v[0-9] , (default: v1)
 
+
+<a name="running-tests-for-jointwo"></a>
 
 ## Running tests for joinTwo()
 
@@ -210,7 +251,11 @@ with the following values
 
 
 
+<a name="results"></a>
+
 # Results
+
+<a name="errpropag6-1"></a>
 
 ## errPropag6()
 
@@ -237,6 +282,8 @@ rate for realistic simulation.
 </iframe>
 
 
+<a name="jointwo-1"></a>
+
 ## joinTwo()
 
 Comparison of various benchmark tests with different compiler options.
@@ -254,6 +301,8 @@ Comparison of various benchmark tests with different compiler options.
 For single precision case, need to reconfirm the effect on the output w.r.t.
 the double precision case
 
+
+<a name="test-eigen"></a>
 
 ## test-eigen
 
@@ -276,6 +325,8 @@ AVX for single precision
 size) matrices showed 15% and 20% respective gains for AVX vs SSE
 
 
+
+<a name="summary-and-outlook"></a>
 
 # Summary and Outlook
 
@@ -310,6 +361,8 @@ re-packing?
 
 
 
+<a name="open-questions-and-to-do-list"></a>
+
 # Open questions and to-do list
 
 * Plug-in tested implementations (e.g. using Eigen) in Sti code and time a real
@@ -332,6 +385,8 @@ Even better if we sample the hit (StiHit) and node (StiNodeErrs) error matrices.
 
 
 
+<a name="appendix"></a>
+
 # Appendix
 
 A few useful commands to check supported and enabled options in `gcc`:
@@ -341,7 +396,9 @@ A few useful commands to check supported and enabled options in `gcc`:
     $ gcc -march=native -mno-avx -dM -E - < /dev/null | egrep "SSE|AVX"
 
 
-## errPropag6
+<a name="errpropag6-2"></a>
+
+## errPropag6()
 
 * `main-errPropag6-vs-trasat-output.cxx` compares the output of `errPropag6()`
 to that of `TCL::trasat()`. Both functions calculate the matrix operation given
@@ -353,6 +410,8 @@ ideone (http://ideone.com/tI1MgY) or by simply doing:
 * `main.cxx` profiles `errPropag6()` in its original and modified versions. See
 below for details.
 
+
+<a name="estimating-rate-of-zero-matrix-elements"></a>
 
 ### Estimating rate of zero matrix elements
 
@@ -367,6 +426,8 @@ Frequency of zeros in F and G matrices by element index
 </a>
 </iframe>
 
+
+<a name="input-raw-data-file"></a>
 
 ### Input raw data file
 
