@@ -1,5 +1,4 @@
-STAR Tracking Optimization Studies
-==================================
+# STAR Tracking Optimization Studies
 
 We discuss possible improvements in track reconstruction algorithms.
 
@@ -66,8 +65,8 @@ end   Fri Apr 28 14:16:36 EDT 2017
 -->
 
 
-Alternative Implementations
-===========================
+
+# Alternative Implementations
 
 Currently most matrix operations in Sti are implemented using the old TCL
 library available in ROOT
@@ -83,8 +82,7 @@ original interface. We also make sure that the returned results are identical
 to the existing Sti functions for the same input.
 
 
-errPropag6
-----------
+## errPropag6()
 
 This function calculates the matrix product `B = ASA^T` where A, S are 6x6
 matrices, S is a symmetric matrix
@@ -102,8 +100,7 @@ matrices, S is a symmetric matrix
 * [eigen.h](../test-StiTrackNode-errPropag6/eigen.h) - Vectorized calculation based on `Eigen` library
 
 
-joinTwo
--------
+## joinTwo()
 
 This function calculates the weighted average of two multi-dimensional vectors
 
@@ -131,8 +128,7 @@ single precision
 
 
 
-Benchmarking
-============
+# Benchmarking
 
 We benchmark the above versions of the `StiTrackNode::errPropag6()` and
 `StiTrackNodeHelper::joinTwo()` functions by calling them in a large number
@@ -152,8 +148,7 @@ Relevant CPU info:
     flags           : ...  sse sse2 ... ssse3 ... sse4_1 sse4_2 ... avx ...
 
 
-How to build
-------------
+## How to build
 
 To compile the tests do:
 
@@ -185,8 +180,7 @@ Another `gcc` option to try is `-ffast-math` but it can give significantly
 different numerical results.
 
 
-Running tests for errPropag6()
-------------------------------
+## Running tests for errPropag6()
 
 Benchmark one of the `StiTrackNode::errPropag6()` implementations by running
 the test as:
@@ -201,8 +195,7 @@ with the following values
     <verbosity>:       Verbosity level: v[0-9] , (default: v1)
 
 
-Running tests for joinTwo()
----------------------------
+## Running tests for joinTwo()
 
 Different implementations of `StiTrackNodeHelper::joinTwo()` can be
 benchmarked similar to `StiTrackNode::errPropag6()`
@@ -216,11 +209,10 @@ with the following values
     <verbosity>:       Verbosity level: v[0-9] , (default: v1)
 
 
-Results
-=======
 
-errPropag6()
-------------
+# Results
+
+## errPropag6()
 
 Comparison of various benchmark tests with different compiler options.
 
@@ -245,8 +237,7 @@ rate for realistic simulation.
 </iframe>
 
 
-joinTwo()
----------
+## joinTwo()
 
 Comparison of various benchmark tests with different compiler options.
 
@@ -264,8 +255,7 @@ For single precision case, need to reconfirm the effect on the output w.r.t.
 the double precision case
 
 
-test-eigen
-----------
+## test-eigen
 
 This is a test to calculate the inverse of 6x6 matrices using Eigen
 
@@ -287,8 +277,7 @@ size) matrices showed 15% and 20% respective gains for AVX vs SSE
 
 
 
-Summary and Outlook
-===================
+# Summary and Outlook
 
 * Milestone #1
 
@@ -321,8 +310,7 @@ re-packing?
 
 
 
-Open questions and to-do list
-=============================
+# Open questions and to-do list
 
 * Plug-in tested implementations (e.g. using Eigen) in Sti code and time a real
 reconstruction job
@@ -344,8 +332,7 @@ Even better if we sample the hit (StiHit) and node (StiNodeErrs) error matrices.
 
 
 
-Appendix
-========
+# Appendix
 
 A few useful commands to check supported and enabled options in `gcc`:
 
@@ -354,8 +341,7 @@ A few useful commands to check supported and enabled options in `gcc`:
     $ gcc -march=native -mno-avx -dM -E - < /dev/null | egrep "SSE|AVX"
 
 
-errPropag6
-----------
+## errPropag6
 
 * `main-errPropag6-vs-trasat-output.cxx` compares the output of `errPropag6()`
 to that of `TCL::trasat()`. Both functions calculate the matrix operation given
