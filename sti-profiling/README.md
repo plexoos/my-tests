@@ -326,6 +326,33 @@ size) matrices showed 15% and 20% respective gains for AVX vs SSE
 
 
 
+<a name="study-of-sti-re-fitting-routine-jointwo"></a>
+
+Study of Sti re-fitting routine `joinTwo()`
+===========================================
+
+In Sti each track candidate (i.e. a track "hypothesis" in a strict mathematical
+sense) is fit to the hits encountered along the way when track is extrapolated
+to the next detector volume. The initial track fitting is done in the outside-in
+direction. In Sti the initial seeding and fitting stages are combined. This
+procedure described above is referred to as a track fitting stage in Sti.
+
+After the fitting stage Sti enters a re-fitting stage in order to get a more
+precise measurement of track parameters. The next re-fitting pass is done in the
+opposite inside-out direction with the already known track parameters in hand.
+
+    double StiTrackNodeHelper::joinTwo(int nP1,const double *P1,const double *E1
+                                      ,int nP2,const double *P2,const double *E2
+                                      ,              double *PJ,      double *EJ);
+
+
+    P = P(x, y, z, phi, 1/Pt, tanL)
+
+Plots of input distributions and the analysis of `joinTwo()` calls can be found
+at <http://nbviewer.jupyter.org/github/plexoos/my-tests/blob/master/sti-profiling/sti_joinTwo_inputs.ipynb>
+
+
+
 <a name="summary-and-outlook"></a>
 
 # Summary and Outlook
