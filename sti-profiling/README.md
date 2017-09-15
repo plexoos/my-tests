@@ -1,5 +1,7 @@
-STAR Tracking (Sti) Optimization Studies
-========================================
+STAR Tracking Optimization Studies
+==================================
+
+We discuss possible improvements in track reconstruction algorithms.
 
 Profiling of `StiMaker::Make()` in `libStiMaker.so` is done by using the
 `callgrind` tool. We reconstruct ten events from a \*.daq file (Run 17) keeping
@@ -15,8 +17,12 @@ functions use significant franctions of the total time spent in the
 - `StiTrackNode::errPropag6()` ~10%
 - `StiTrackNodeHelper::joinTwo()` ~30%
 
-<img src="call_graph_joinTwo.png" width="40%" />
-<img src="call_graph_errPropag6.png" width="20%" />
+<table style="width:60%">
+<tr>
+<td width="60%"> <img src="call_graph_joinTwo.png"/> </td>
+<td width="40%"> <img src="call_graph_errPropag6.png"/> </td>
+</tr>
+</table>
 
 From the reconstruction job log file it appears ~80% of the total time is spent
 in `StiMaker::Make()`.
@@ -180,7 +186,7 @@ different numerical results.
 
 
 Running tests for errPropag6()
----------------------------------
+------------------------------
 
 Benchmark one of the `StiTrackNode::errPropag6()` implementations by running
 the test as:
@@ -196,7 +202,7 @@ with the following values
 
 
 Running tests for joinTwo()
----------------------------------
+---------------------------
 
 Different implementations of `StiTrackNodeHelper::joinTwo()` can be
 benchmarked similar to `StiTrackNode::errPropag6()`
@@ -213,8 +219,8 @@ with the following values
 Results
 =======
 
-errPropag6
-----------
+errPropag6()
+------------
 
 Comparison of various benchmark tests with different compiler options.
 
@@ -239,8 +245,8 @@ rate for realistic simulation.
 </iframe>
 
 
-joinTwo
--------
+joinTwo()
+---------
 
 Comparison of various benchmark tests with different compiler options.
 
@@ -284,7 +290,7 @@ size) matrices showed 15% and 20% respective gains for AVX vs SSE
 Summary and Outlook
 ===================
 
-* Milestone #1 (80% complete, 100% in 1-2 weeks): 
+* Milestone #1
 
   - Benchmark different (vectorized) implementations of top time consuming Sti
     functions
