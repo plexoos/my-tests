@@ -48,5 +48,12 @@ target_link_libraries(test-StiTrackNode-errPropag6 rt pthread)
 
 add_executable(test-StiTrackNode-errPropag6-vs-trasat-output test-StiTrackNode-errPropag6/main-errPropag6-vs-trasat-output.cxx)
 
-add_executable(test-StiTrackNodeHelper-joinTwo test-StiTrackNodeHelper-joinTwo/main.cxx)
-target_link_libraries(test-StiTrackNodeHelper-joinTwo rt pthread)
+
+root_generate_dictionary (
+   Sti_dict
+   test-StiTrackNodeHelper-joinTwo/FuncArgsJoinTwo.h
+   LINKDEF test-StiTrackNodeHelper-joinTwo/LinkDef.h
+)
+
+add_executable(test-StiTrackNodeHelper-joinTwo test-StiTrackNodeHelper-joinTwo/main.cxx Sti_dict.cxx)
+target_link_libraries(test-StiTrackNodeHelper-joinTwo ${ROOT_LIBRARIES} rt pthread)

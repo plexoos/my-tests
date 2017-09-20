@@ -3,6 +3,9 @@
 #include <iterator>
 #include <string>
 
+#include "TFile.h"
+#include "TTree.h"
+
 #include "Eigen/Dense"
 
 #include "common/tools.h"
@@ -11,6 +14,8 @@
 #include "test-StiTrackNodeHelper-joinTwo/eigen_float.h"
 #include "test-StiTrackNodeHelper-joinTwo/eigen_as_orig.h"
 #include "test-StiTrackNodeHelper-joinTwo/eigen_unpacked.h"
+
+#include "test-StiTrackNodeHelper-joinTwo/FuncArgsJoinTwo.h"
 
 
 using tested_function_t = double (*)(int nP1, const double *P1, const double *E1,
@@ -21,6 +26,7 @@ using tested_function_t = double (*)(int nP1, const double *P1, const double *E1
 tested_function_t process_arg_test_func(const char *arg, std::string& test_func_name);
 
 void simulate_measurement(double (&P)[6], double (&E)[21]);
+int  read_measurements(double (&P1)[6], double (&E1)[21], double (&P2)[6], double (&E2)[21]);
 void print_measurement(const double (&P)[6], const double (&E)[21]);
 
 void pack(const double (&Eu)[36], double (&Ep)[21]);
@@ -58,9 +64,9 @@ int main(int argc, char **argv)
 
    for (int i = 0; i < n_iterations; i++)
    {
+      if ( read_measurements(P1, E1, P2, E2) != 0 ) { i--; continue; }
+
       // Generate input for the function being tested
-      simulate_measurement(P1, E1);
-      simulate_measurement(P2, E2);
 
       if (verbosity > 2) {
          std::cout << "\nIteration: #" << i+1 << "\ninput:\n";
@@ -172,6 +178,46 @@ void simulate_measurement(double (&P)[6], double (&E)[21])
    }
 
    pack(Eu, E);
+}
+
+
+
+int read_measurements(double (&P1)[6], double (&E1)[21], double (&P2)[6], double (&E2)[21])
+{
+   static int i_entry = 0;
+   static int i_accepted_entry = -1;
+   static int n_entries = 0;
+   static TFile inFile("inputs_joinTwo.root", "READ");
+   static TTree* inTree;
+   static FuncArgsJoinTwo *fa = new FuncArgsJoinTwo();
+
+   if ( i_accepted_entry == -1 ) {
+      inTree = static_cast<TTree*>( inFile.Get("t") );
+      inTree->SetBranchAddress("b", &fa);
+      n_entries = inTree->GetEntries();
+      i_accepted_entry++;
+   }
+
+   if ( i_entry >= n_entries) i_entry = 0;
+
+   inTree->GetEntry(i_entry);
+
+   i_entry++;
+
+   if (fa->nP1 != 6 || fa->nP1 != fa->nP2)
+      return -1;
+
+   i_accepted_entry++;
+
+   nP1 = fa->nP1;
+   std::copy(fa->P1, fa->P1 + fa->nP1, P1);
+   std::copy(fa->E1, fa->E1 + fa->nE1, E1);
+
+   nP2 = fa->nP2;
+   std::copy(fa->P2, fa->P2 + fa->nP2, P2);
+   std::copy(fa->E2, fa->E2 + fa->nE2, E2);
+
+   return 0;
 }
 
 
