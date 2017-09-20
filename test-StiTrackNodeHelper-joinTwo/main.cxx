@@ -11,6 +11,7 @@
 #include "common/tools.h"
 #include "test-StiTrackNodeHelper-joinTwo/orig.h"
 #include "test-StiTrackNodeHelper-joinTwo/eigen.h"
+#include "test-StiTrackNodeHelper-joinTwo/eigen_5x5.h"
 #include "test-StiTrackNodeHelper-joinTwo/eigen_float.h"
 #include "test-StiTrackNodeHelper-joinTwo/eigen_as_orig.h"
 #include "test-StiTrackNodeHelper-joinTwo/eigen_unpacked.h"
@@ -116,6 +117,11 @@ tested_function_t process_arg_test_func(const char *arg, std::string& test_func_
    {
       test_func_name = "eigen";
       return eigen::joinTwo;
+   }
+   else if (std::string("eigen_5x5").find(arg1) == 0)
+   {
+      test_func_name = "eigen_5x5";
+      return eigen_5x5::joinTwo;
    }
    else if (std::string("eigen_float").find(arg1) == 0)
    {
