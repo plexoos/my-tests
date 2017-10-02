@@ -1,0 +1,3 @@
+precision , build_-march_native_-O2_-m32_-mavx , build_-march_native_-O2_-m32_-mno-avx , build_-march_native_-O2_-m64_-mavx , build_-march_native_-O2_-m64_-mno-avx
+single    , 640                                , 740                                   , 520                                , 520
+double    , 790                                , 710                                   , 580                                , 670
