@@ -18,8 +18,6 @@ void pack(int dim, double* a, double* b)
     {
       int index_a = dim * irow + icol;
       int index_b = icol + irow * (irow + 1)/2;
-
-      std::cout << " [" << irow << ", " << icol << "]   a[" << index_a << "]   b[" << index_b << "]: " << a[index_a] << " -> " << b[index_b] << std::endl;
     }
   }
 }
@@ -30,8 +28,6 @@ void pack_recurr(int dim, double* a, double* b, int irow, int icol)
   int index_a = dim * irow + icol;
   int index_b = icol + irow * (irow + 1)/2;
 
-  std::cout << " [" << irow << ", " << icol << "]   a[" << index_a << "]   b[" << index_b << "]: " << a[index_a] << " -> " << b[index_b] << std::endl;
- 
   if (icol == 0 && irow == 0)
     return;
 
@@ -54,8 +50,6 @@ void unpack_recurr(int dim, double* b, double* a, int irow, int icol)
   int index_a = dim * irow + icol;
   int index_b = icol + irow * (irow + 1)/2;
 
-  std::cout << " [" << irow << ", " << icol << "]   b[" << index_b << "]   a[" << index_a << "]: " << b[index_b] << " -> " << a[index_a] << std::endl;
- 
   if (icol == 0 && irow == 0)
   {
     a[0] = b[0];
@@ -64,10 +58,7 @@ void unpack_recurr(int dim, double* b, double* a, int irow, int icol)
 
   if (icol < irow && icol > 0)
   {
-    std::cout << "this none-diag. next none-diag\n";
-
     int index_a_T = dim * icol + irow;
-    std::cout << " [" << icol << ", " << irow << "]T  b[" << index_b << "]   a[" << index_a_T << "]: " << b[index_b] << " -> " << a[index_a_T] << std::endl;
  
     a[index_a]   = b[index_b];
     a[index_a_T] = b[index_b];
@@ -77,7 +68,6 @@ void unpack_recurr(int dim, double* b, double* a, int irow, int icol)
 
   if (icol == irow && icol > 0)
   {
-    std::cout << "this diag\n";
     a[index_a]   = b[index_b];
 
     unpack_recurr(dim, b, a, irow, icol-1);
@@ -85,10 +75,7 @@ void unpack_recurr(int dim, double* b, double* a, int irow, int icol)
 
   if (icol < irow && icol == 0)
   {
-    std::cout << "this none-diag. next diag\n";
-
     int index_a_T = dim * icol + irow;
-    std::cout << " [" << icol << ", " << irow << "]T  b[" << index_b << "]   a[" << index_a_T << "]: " << b[index_b] << " -> " << a[index_a_T] << std::endl;
  
     a[index_a]   = b[index_b];
     a[index_a_T] = b[index_b];
@@ -134,8 +121,6 @@ private:
   static void pack_impl(const _InputType* a, _OutputType* b)
   {
     b[0] = a[0];
-
-    std::cout << " [" << _IRow << ", " << _ICol << "]   a[0] -> b[0]: " << a[0] << " -> " << b[0] << std::endl;
   }
 
 
@@ -146,8 +131,6 @@ private:
     int index_b = _ICol + _IRow * (_IRow + 1)/2;
 
     b[index_b] = a[index_a];
-
-    std::cout << " [" << _IRow << ", " << _ICol << "]   a[" << index_a << "] ->  b[" << index_b << "]: " << a[index_a] << " -> " << b[index_b] << std::endl;
 
     pack_impl<_IRow, _ICol - 1>(a, b);
   }
@@ -161,8 +144,6 @@ private:
 
     b[index_b] = a[index_a];
 
-    std::cout << " [" << _IRow << ", " << _ICol << "]   a[" << index_a << "] -> b[" << index_b << "]: " << a[index_a] << " -> " << b[index_b] << std::endl;
-
     pack_impl<_IRow - 1, _IRow - 1>(a, b);
   }
 
@@ -172,8 +153,6 @@ private:
   static void unpack_impl(const _InputType* b, _OutputType* a)
   {
     a[0] = b[0];
-
-    std::cout << " [" << _IRow << ", " << _ICol << "]   a[0] -> b[0]: " << a[0] << " -> " << b[0] << std::endl;
   }
 
 
@@ -187,8 +166,6 @@ private:
     a[index_a]   = b[index_b];
     a[index_a_T] = b[index_b];
 
-    std::cout << " [" << _IRow << ", " << _ICol << "]   b[" << index_b << "] -> a[" << index_a << "]: " << b[index_b] << " -> " << a[index_a] << std::endl;
-
     unpack_impl<_IRow, _ICol - 1>(b, a);
   }
 
@@ -200,8 +177,6 @@ private:
     int index_b = _ICol + _IRow * (_IRow + 1)/2;
 
     a[index_a] = b[index_b];
-
-    std::cout << " [" << _IRow << ", " << _ICol << "]   b[" << index_b << "] -> a[" << index_a << "]: " << b[index_b] << " -> " << a[index_a] << std::endl;
 
     unpack_impl<_IRow, _ICol - 1>(b, a);
   }
@@ -216,8 +191,6 @@ private:
 
     a[index_a]   = b[index_b];
     a[index_a_T] = b[index_b];
-
-    std::cout << " [" << _IRow << ", " << _ICol << "]   b[" << index_b << "] -> a[" << index_a << "]: " << b[index_b] << " -> " << a[index_a] << std::endl;
 
     unpack_impl<_IRow - 1, _IRow - 1>(b, a);
   }
