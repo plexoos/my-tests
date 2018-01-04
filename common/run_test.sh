@@ -62,7 +62,10 @@ BUILD_DIRS=()
 
 # Arg test_func_name:
 #ARGS1=( "orig" "orig_no_branch" "trasat" "smatrix" "eigen" )
+#ARGS1=( "orig" "eigen" "eigen_5x5" "eigen_NxN" "eigen_float" "eigen_as_orig" "eigen_unpacked" )
+#ARGS1=( "orig" "eigen" "eigen_5x5" "eigen_NxN" )
 ARGS1=( "orig" "eigen_NxN" )
+#ARGS1=( "orig" "eigen" "eigen_float" )
 # Arg n_iterations:
 ARGS2=( "" )
 # Arg zero_freq:
