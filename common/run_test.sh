@@ -14,14 +14,45 @@ RESULT_CSV=~/my-tests/${TEST_NAME}/results.csv
 
 # Declare array of cxx options to test
 CXX_OPTIONS=(
-    "-march=native -O2 -m32 -fno-tree-vectorize -D EIGEN_DONT_VECTORIZE"
-    "-march=native -O2 -m32 -mavx"
-    "-march=native -O2 -m32 -mno-avx"
-    "-march=native -O3 -m32 -mno-avx"
-    "-march=native -O2 -m64 -fno-tree-vectorize -D EIGEN_DONT_VECTORIZE"
-    "-march=native -O2 -m64 -mavx"
-    "-march=native -O2 -m64 -mno-avx"
-    "-march=native -O3 -m64 -mno-avx"
+    "-O2 -m32 -msse -mno-avx -ftree-vectorize"
+    "-O2 -m32 -msse -mno-avx -fno-tree-vectorize"
+    "-O2 -m32 -msse -mno-avx -ftree-vectorize -D EIGEN_DONT_VECTORIZE"
+    "-O2 -m32 -msse -mno-avx -fno-tree-vectorize -D EIGEN_DONT_VECTORIZE"
+
+    "-O3 -m32 -msse -mno-avx -ftree-vectorize"
+    "-O3 -m32 -msse -mno-avx -fno-tree-vectorize"
+    "-O3 -m32 -msse -mno-avx -ftree-vectorize -D EIGEN_DONT_VECTORIZE"
+    "-O3 -m32 -msse -mno-avx -fno-tree-vectorize -D EIGEN_DONT_VECTORIZE"
+
+    "-O2 -m64 -msse -mno-avx -ftree-vectorize"
+    "-O2 -m64 -msse -mno-avx -fno-tree-vectorize"
+    "-O2 -m64 -msse -mno-avx -ftree-vectorize -D EIGEN_DONT_VECTORIZE"
+    "-O2 -m64 -msse -mno-avx -fno-tree-vectorize -D EIGEN_DONT_VECTORIZE"
+
+    "-O3 -m64 -msse -mno-avx -ftree-vectorize"
+    "-O3 -m64 -msse -mno-avx -fno-tree-vectorize"
+    "-O3 -m64 -msse -mno-avx -ftree-vectorize -D EIGEN_DONT_VECTORIZE"
+    "-O3 -m64 -msse -mno-avx -fno-tree-vectorize -D EIGEN_DONT_VECTORIZE"
+)
+
+# Additional cmake options corresponding to CXX_OPTIONS
+CMAKE_OPTIONS=(
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_x8664_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_x8664_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_x8664_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_x8664_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_x8664_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_x8664_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_x8664_gcc482/rootdeb/bin/root-config"
+    "-D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D ROOT_CONFIG_EXECUTABLE=/afs/rhic.bnl.gov/star/ROOT/5.34.30/.sl68_x8664_gcc482/rootdeb/bin/root-config"
 )
 
 BUILD_DIRS=()
@@ -31,7 +62,7 @@ BUILD_DIRS=()
 
 # Arg test_func_name:
 #ARGS1=( "orig" "orig_no_branch" "trasat" "smatrix" "eigen" )
-ARGS1=( "orig" "eigen" "eigen_float" )
+ARGS1=( "orig" "eigen_NxN" )
 # Arg n_iterations:
 ARGS2=( "" )
 # Arg zero_freq:
@@ -97,7 +128,7 @@ function run_build
         echo "$ cd ${BUILD_DIRS[$index]}"
         cd ${BUILD_DIRS[$index]}
 
-        cmd="cmake -D EIGEN_INCLUDE_DIR=~/eigen-67e894c6cd8f/ -D CMAKE_CXX_FLAGS=\" ${CXX_OPTIONS[$index]} -D NDEBUG\" ../"
+        cmd="cmake ${CMAKE_OPTIONS[$index]} -D CMAKE_CXX_FLAGS=\" ${CXX_OPTIONS[$index]} \" ../"
         echo "$ $cmd"
         eval $cmd
 
@@ -168,6 +199,8 @@ function run_tests
             do
                time_meas+=( $( $cmd ) )
             done
+
+            printf "time_meas: ${time_meas[*]}\n"
 
             stats=( $(calc_stats ${time_meas[@]}) )
 
