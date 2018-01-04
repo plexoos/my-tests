@@ -47,7 +47,7 @@ int main(int argc, char **argv)
    // Process 3rd optional argument
    const int verbosity = tools::process_arg_verb(argc > 3 ? argv[3] : "v1");
 
-   if (verbosity > 1)
+   if (verbosity >= 2)
    {
       std::cout << "test_func_name:  " << test_func_name << "\n"
                 << "n_iterations:    " << n_iterations << "\n";
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 
       // Generate input for the function being tested
 
-      if (verbosity > 2) {
+      if (verbosity >= 3) {
          std::cout << "\nIteration: #" << i+1 << "\ninput:\n";
          print_measurement(P1, E1);
          print_measurement(P2, E2);
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_1);
 
-      if (verbosity > 2) {
+      if (verbosity >= 3) {
          std::cout << "output:\n" << "chi2: " << chi2 << "\n";
          print_measurement(PJ, EJ);
       }
@@ -91,10 +91,10 @@ int main(int argc, char **argv)
    }
 
    // Print out final result based on verbosity level
-   if (verbosity > 1)
+   if (verbosity >= 2)
       std::cout << "elapsed time: " << test_func_name << ", "
                 << time_accum.tv_sec << "." << time_accum.tv_nsec << ", \n";
-   else if (verbosity > 0)
+   else if (verbosity >= 1)
       std::cout << std::setprecision(10)
                 << time_accum.tv_sec*1000 + time_accum.tv_nsec/1000000. << "\n";
    else {}
