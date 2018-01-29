@@ -2,9 +2,7 @@ namespace std {}
 using namespace std;
 #include "muDstProjectHeaders.h"
 
-#include "muDstLinkDef.h"
 
-#include "muDstProjectDict.cxx"
 
 struct DeleteObjectFunctor {
    template <typename T>

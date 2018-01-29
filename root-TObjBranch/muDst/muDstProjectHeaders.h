@@ -77,4 +77,3 @@
 #include "StDetectorId.h"
 #include "StMuRpsTrackPoint.h"
 #include "StMuRpsTrack.h"
-#include "muDstProjectInstances.h"
