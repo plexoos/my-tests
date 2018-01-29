@@ -17,6 +17,7 @@
 
 void write_tree();
 void read_tree();
+void print(const StMuTrack& track);
 
 
 int main(int argc, char **argv)
@@ -133,7 +134,7 @@ void read_tree()
          std::cout << "  " << "track: " << i_track << "\n";
 
          StMuTrack& track = prim_tracks.GetObj(i_track-1);
-         track.Dump();
+         print(track);
 
          StMuPrimaryTrackCovariance& track_cov = prim_tracks_cov.GetObj(i_track-1);
          track_cov.Dump();
@@ -146,7 +147,7 @@ void read_tree()
          std::cout << "  " << "track: " << i_track << "\n";
 
          StMuTrack& track = glob_tracks.GetObj(i_track-1);
-         track.Dump();
+         print(track);
 
          StDcaGeometry& track_cov = glob_tracks_cov.GetObj(i_track-1);
          track_cov.Dump();
@@ -154,4 +155,53 @@ void read_tree()
 
       std::cout << std::endl;
    }
+}
+
+
+
+void print(const StMuTrack& track)
+{
+   std::cout
+   <<   "  " << "mId                      : " <<  (int)track.mId
+   << "\n  " << "mType                    : " <<  (int)track.mType
+   << "\n  " << "mFlag                    : " <<  (int)track.mFlag
+   << "\n  " << "mFlagExtension           : " <<  (int)track.mFlagExtension
+   << "\n  " << "mIndex2Global            : " <<  (int)track.mIndex2Global
+   << "\n  " << "mIndex2RichSpectra       : " <<  (int)track.mIndex2RichSpectra
+   << "\n  " << "mIndex2BTofHit           : " <<  (int)track.mIndex2BTofHit
+   << "\n  " << "mIndex2MtdHit            : " <<  (int)track.mIndex2MtdHit
+   << "\n  " << "mVertexIndex             : " <<  (int)track.mVertexIndex
+   << "\n  " << "mNHits                   : " <<  (int)track.mNHits
+   << "\n  " << "mNHitsPoss               : " <<  (int)track.mNHitsPoss
+   << "\n  " << "mNHitsDedx               : " <<  (int)track.mNHitsDedx
+   << "\n  " << "mNHitsFit                : " <<  (int)track.mNHitsFit
+   << "\n  " << "mNHitsPossInner          : " <<  (int)track.mNHitsPossInner
+   << "\n  " << "mNHitsFitInner           : " <<  (int)track.mNHitsFitInner
+   << "\n  " << "mNHitsPossTpc            : " <<  (int)track.mNHitsPossTpc
+   << "\n  " << "mNHitsFitTpc             : " <<  (int)track.mNHitsFitTpc
+   << "\n  " << "mPidProbElectron         : " <<  (int)track.mPidProbElectron
+   << "\n  " << "mPidProbPion             : " <<  (int)track.mPidProbPion
+   << "\n  " << "mPidProbKaon             : " <<  (int)track.mPidProbKaon
+   << "\n  " << "mPidProbProton           : " <<  (int)track.mPidProbProton
+   << "\n  " << "mNSigmaElectron          : " <<  (int)track.mNSigmaElectron
+   << "\n  " << "mNSigmaPion              : " <<  (int)track.mNSigmaPion
+   << "\n  " << "mNSigmaKaon              : " <<  (int)track.mNSigmaKaon
+   << "\n  " << "mNSigmaProton            : " <<  (int)track.mNSigmaProton
+   << "\n  " << "mdEdx                    : " <<  track.mdEdx
+   << "\n  " << "mChiSqXY                 : " <<  track.mChiSqXY
+   << "\n  " << "mChiSqZ                  : " <<  track.mChiSqZ
+   << "\n  " << "mPt                      : " <<  track.mPt
+   << "\n  " << "mEta                     : " <<  track.mEta
+   << "\n  " << "mPhi                     : " <<  track.mPhi
+   << "\n  " << "mMap0, mMap1             : " <<  track.mTopologyMap.mMap0 << ", " <<  track.mTopologyMap.mMap1
+   << "\n  " << "mP                       : " <<  track.mP.mX1 << ", " <<  track.mP.mX2 << ", " <<  track.mP.mX3
+   << "\n  " << "mDCA                     : " <<  track.mDCA.mX1 << ", " <<  track.mDCA.mX2 << ", " <<  track.mDCA.mX3
+   << "\n  " << "mDCAGlobal               : " <<  track.mDCAGlobal.mX1 << ", " <<  track.mDCAGlobal.mX2 << ", " <<  track.mDCAGlobal.mX3
+   << "\n  " << "mFirstPoint              : " <<  track.mFirstPoint.mX1 << ", " <<  track.mFirstPoint.mX2 << ", " <<  track.mFirstPoint.mX3
+   << "\n  " << "mLastPoint               : " <<  track.mLastPoint.mX1 << ", " <<  track.mLastPoint.mX2 << ", " <<  track.mLastPoint.mX3
+   << "\n  " << "mIndex2Cov               : " <<  (int)track.mIndex2Cov
+   << "\n  " << "mIdTruth                 : " <<  (int)track.mIdTruth
+   << "\n  " << "mQuality                 : " <<  (int)track.mQuality
+   << "\n  " << "mIdParentVx              : " <<  (int)track.mIdParentVx
+   << "\n";
 }
