@@ -28,8 +28,8 @@ using tested_function_t = double (*)(int nP1, const double *P1, const double *E1
 tested_function_t process_arg_test_func(const char *arg, std::string& test_func_name);
 
 void simulate_measurement(double (&P)[6], double (&E)[21]);
-int  read_measurements(double (&P1)[6], double (&E1)[21], double (&P2)[6], double (&E2)[21]);
-void print_measurement(const double (&P)[6], const double (&E)[21]);
+int  read_measurements(int &nP1, double (&P1)[6], double (&E1)[21], int &nP2, double (&P2)[6], double (&E2)[21]);
+void print_measurement(int nP, const double (&P)[6], const double (&E)[21]);
 
 void pack(const double (&Eu)[36], double (&Ep)[21]);
 void unpack(const double (&Ep)[21], double (&Eu)[36]);
@@ -55,6 +55,7 @@ int main(int argc, char **argv)
    }
 
 
+   int    nP1, nP2;
    double P1[6]  = {},  P2[6]  = {},  PJ[6]  = {};
    double E1[21] = {},  E2[21] = {},  EJ[21] = {};
 
@@ -66,26 +67,26 @@ int main(int argc, char **argv)
 
    for (int i = 0; i < n_iterations; i++)
    {
-      if ( read_measurements(P1, E1, P2, E2) != 0 ) { i--; continue; }
+      if ( read_measurements(nP1, P1, E1, nP2, P2, E2) != 0 ) { i--; continue; }
 
       // Generate input for the function being tested
 
       if (verbosity >= 3) {
          std::cout << "\nIteration: #" << i+1 << "\ninput:\n";
-         print_measurement(P1, E1);
-         print_measurement(P2, E2);
+         print_measurement(nP1, P1, E1);
+         print_measurement(nP2, P2, E2);
       }
 
       // Perform the actual measurement
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_0);
 
-      double chi2 = test_func(6, P1, E1, 6, P2, E2, PJ, EJ);
+      double chi2 = test_func(nP1, P1, E1, nP2, P2, E2, PJ, EJ);
 
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_1);
 
       if (verbosity >= 3) {
          std::cout << "output:\n" << "chi2: " << chi2 << "\n";
-         print_measurement(PJ, EJ);
+         print_measurement(nP1, PJ, EJ);
       }
 
       tools::time_add(time_accum, tools::time_diff(time_0, time_1) );
@@ -154,16 +155,16 @@ tested_function_t process_arg_test_func(const char *arg, std::string& test_func_
 
 
 
-void print_measurement(const double (&P)[6], const double (&E)[21])
+void print_measurement(int nP, const double (&P)[6], const double (&E)[21])
 {
    std::cout << std::setprecision(5);
 
    std::cout << "P: ";
-   std::copy(P, P + 6, std::ostream_iterator<double>(std::cout, ", "));
+   std::copy(P, P + nP, std::ostream_iterator<double>(std::cout, ", "));
    std::cout << "\n";
 
    std::cout << "E: ";
-   std::copy(E, E + 21, std::ostream_iterator<double>(std::cout, ", "));
+   std::copy(E, E + nP*(nP + 1)/2, std::ostream_iterator<double>(std::cout, ", "));
    std::cout << "\n";
 }
 
@@ -194,7 +195,7 @@ void simulate_measurement(double (&P)[6], double (&E)[21])
 
 
 
-int read_measurements(double (&P1)[6], double (&E1)[21], double (&P2)[6], double (&E2)[21])
+int read_measurements(int &nP1, double (&P1)[6], double (&E1)[21], int &nP2, double (&P2)[6], double (&E2)[21])
 {
    static int i_entry = 0;
    static int i_accepted_entry = -1;
@@ -216,7 +217,7 @@ int read_measurements(double (&P1)[6], double (&E1)[21], double (&P2)[6], double
 
    i_entry++;
 
-   if (fa->nP1 != 6 || fa->nP1 != fa->nP2)
+   if (fa->nP1 != fa->nP2)
       return -1;
 
    i_accepted_entry++;
