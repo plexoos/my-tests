@@ -27,7 +27,9 @@ using tested_function_t = double (*)(int nP1, const double *P1, const double *E1
 
 tested_function_t process_arg_test_func(const char *arg, std::string& test_func_name);
 
-void simulate_measurement(double (&P)[6], double (&E)[21]);
+template<int N>
+void simulate_measurement(double (&P)[N], double (&E)[ N*(N + 1)/2 ]);
+
 int  read_measurements(int& nP1, double* P1, double* E1, int& nP2, double* P2, double* E2);
 void print_measurement(const int nP, const double* P, const double* E);
 
@@ -170,22 +172,23 @@ void print_measurement(const int nP, const double* P, const double* E)
 
 
 
-void simulate_measurement(double (&P)[6], double (&E)[21])
+template<int N>
+void simulate_measurement(double (&P)[N], double (&E)[ N*(N + 1)/2 ])
 {
    using namespace Eigen;
-   using Matrix6x6 = Matrix<double, 6, 6, RowMajor>;
+   using MatrixNxN = Matrix<double, N, N, RowMajor>;
 
    double Eu[36];
-   Map< Matrix6x6 >  Eu_m( Eu );
+   Map< MatrixNxN >  Eu_m( Eu );
 
    Eu_m.setRandom();
 
    Eu_m.diagonal() = Eu_m.diagonal().cwiseAbs();
 
-   Eu_m.noalias() = Matrix6x6(Eu_m.triangularView<Lower>()) * Matrix6x6(Eu_m.triangularView<Lower>()).transpose();
+   Eu_m.noalias() = MatrixNxN(Eu_m.template triangularView<Lower>()) * MatrixNxN(Eu_m.template triangularView<Lower>()).transpose();
 
 
-   for (int i = 0; i < 6; i++)
+   for (int i = 0; i < N; i++)
    {
       P[i] = tools::my_rand(-0.5, 0.5);
    }
