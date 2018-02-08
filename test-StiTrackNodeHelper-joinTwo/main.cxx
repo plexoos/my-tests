@@ -28,8 +28,8 @@ using tested_function_t = double (*)(int nP1, const double *P1, const double *E1
 tested_function_t process_arg_test_func(const char *arg, std::string& test_func_name);
 
 void simulate_measurement(double (&P)[6], double (&E)[21]);
-int  read_measurements(int &nP1, double (&P1)[6], double (&E1)[21], int &nP2, double (&P2)[6], double (&E2)[21]);
-void print_measurement(int nP, const double (&P)[6], const double (&E)[21]);
+int  read_measurements(int& nP1, double* P1, double* E1, int& nP2, double* P2, double* E2);
+void print_measurement(const int nP, const double* P, const double* E);
 
 void pack(const double (&Eu)[36], double (&Ep)[21]);
 void unpack(const double (&Ep)[21], double (&Eu)[36]);
@@ -155,7 +155,7 @@ tested_function_t process_arg_test_func(const char *arg, std::string& test_func_
 
 
 
-void print_measurement(int nP, const double (&P)[6], const double (&E)[21])
+void print_measurement(const int nP, const double* P, const double* E)
 {
    std::cout << std::setprecision(5);
 
@@ -195,7 +195,7 @@ void simulate_measurement(double (&P)[6], double (&E)[21])
 
 
 
-int read_measurements(int &nP1, double (&P1)[6], double (&E1)[21], int &nP2, double (&P2)[6], double (&E2)[21])
+int read_measurements(int& nP1, double* P1, double* E1, int& nP2, double* P2, double* E2)
 {
    static int i_entry = 0;
    static int i_accepted_entry = -1;
