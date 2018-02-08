@@ -122,7 +122,7 @@ function make_build_dirs
 }
 
 
-function run_build
+function build_tests
 {
     cd $TEST_DIR
 
@@ -225,7 +225,7 @@ function run_tests
 make_build_dirs
 
 # This step can be skipped if it is not the first time the script is run
-run_build
+build_tests
 
 # Requires at least 2 measurements to calculate statistics
 run_tests 10
