@@ -1,6 +1,14 @@
 #ifndef TObjBranch_h
 #define TObjBranch_h
 
+/**
+ * A header-only interface to associate ROOT objects with ROOT branches.
+ *
+ * \author Dmitri Smirnov <dmixsmi@gmail.com>
+ * \date 6 March, 2018
+ * \version 1.0
+ */
+
 #include <set>
 #include <utility>
 #include <iterator>
@@ -134,6 +142,17 @@ public:
      mObj.SetClass(TObject_t().ClassName(), initial_size);
   }
 
+
+  /**
+   * Removes all elements from the internal container mObj of type TClonesArray.
+   *
+   * For details see documentation for TClonesArray::Clear() at
+   * https://root.cern.ch/doc/master/classTClonesArray.html
+   *
+   * "... TClonesArray allows you to "reuse" the same portion of memory ...
+   * Every time the memory of the TClonesArray has to be reused, the Clear()
+   * method is used. ... "
+   */
   virtual void Clear()
   {
      mObj.Clear();
@@ -239,6 +258,5 @@ private:
 
    std::set< TBranchI* >  mBranches;
 };
-
 
 #endif
