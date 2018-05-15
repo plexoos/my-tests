@@ -3,11 +3,30 @@
 
 #include <set>
 #include <utility>
+#include <iterator>
 
 #include "TBranch.h"
 #include "TObject.h"
 #include "TTree.h"
 #include "TClonesArray.h"
+
+
+template <class TObject_t>
+class TTypedIter : public TIter
+{
+   static_assert(std::is_base_of<TObject, TObject_t>::value, "TObject_t type must inherit from TObject");
+
+   TTypedIter() = default;
+
+public:
+
+   TTypedIter(const TIter &iter) : TIter(iter) {}
+
+   TObject_t& operator()() { return *static_cast<TObject_t *>(TIter::Next()); }
+   TObject_t& Next() { return *static_cast<TObject_t *>(TIter::Next()); }
+   TObject_t& operator*() const { return *static_cast<TObject_t *>(TIter::operator*()); }
+};
+
 
 
 
@@ -144,6 +163,18 @@ public:
      TObject_t* obj = new( mObj[last_index] )  TObject_t(std::forward<Args>(args)...);
 
      return std::make_pair(obj, last_index);
+  }
+
+
+  const TTypedIter<TObject_t> begin() const
+  {
+    return mObj.begin();
+  }
+
+
+  const TTypedIter<TObject_t> end() const
+  {
+     return mObj.end();
   }
 
 };
