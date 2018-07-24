@@ -70,4 +70,5 @@
 #pragma link C++ class StTrackTopologyMap+;
 #pragma link C++ class StMuHelix+;
 #pragma link C++ class StMuPmdCluster+;
+#pragma link C++ class StThreeVector<float>+;
 #pragma link C++ class StMuEpdHit+;
