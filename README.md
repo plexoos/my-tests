@@ -1,10 +1,14 @@
-Compile and run (Linux)
------------------------
+Some tests can be compiled from the top directory while others have their own
+CMakeLists.txt
+
+
+# Compile and run (Linux)
+
+To compile tests from the top directory do:
 
     $ git clone https://github.com/plexoos/my-tests.git
     $ cd my-tests && mkdir build && cd build
-    $ cmake -D CMAKE_BUILD_TYPE=Release ../
-    $ cmake --build .
+    $ cmake ../ && cmake --build .
 
 Some targets may require additional flags. For example,
 
@@ -14,7 +18,24 @@ Some targets may require additional flags. For example,
       -D CMAKE_CXX_FLAGS="-march=native"
 
 
-Link to test results (gihub.io pages)
--------------------------------------
+# Links to some studies
 
-[test-StiTrackNode-errPropag6](https://plexoos.github.io/my-tests/test-StiTrackNode-errPropag6/)
+<dl>
+
+<dt>
+<a href="root-branch-compress/">root-branch-compress</a>
+</dt>
+<dd>
+We study the precision and compression of different packing modes of the
+`Double32_t` and `Float16_t` types in ROOT
+</dd>
+
+<dt>
+<a href="sti-profiling/">star-tracking-optimization</a>
+</dt>
+<dd>
+A study to explore various optimization techniques for the track reconstruction
+code used at the STAR experiment
+</dd>
+
+</dl>
