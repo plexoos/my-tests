@@ -78,6 +78,8 @@ public:
      }
    }
 
+   std::string GetName() const { return mBranchName; }
+
 protected:
 
    TBranchT(std::string branch_name) :
