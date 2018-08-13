@@ -9,7 +9,6 @@
  * \version 1.0
  */
 
-#include <set>
 #include <utility>
 #include <iterator>
 
@@ -201,64 +200,5 @@ public:
 };
 
 
-/**
- * A set of `TObjBranch`es
- */
-class TObjTree
-{
-public:
-
-   TObjTree(TTree& tree) : mTree(tree), mBranches()
-   { }
-
-
-   void ReadFrom(TTree& tree)
-   {
-      for (auto branch : mBranches)
-         branch->ReadFrom(tree);
-   }
-
-
-   void WriteTo(TTree& tree)
-   {
-      for (auto branch : mBranches)
-         branch->WriteTo(tree);
-   }
-
-
-   template<typename TObject_t>
-   TCABranch<TObject_t>& AttachTCA( std::string branch_name )
-   {
-      auto tca_branch = new TCABranch<TObject_t>(branch_name);
-      auto result = mBranches.insert( tca_branch );
-
-      return *tca_branch;
-   }
-
-
-   template<typename TObject_t>
-   TCABranch<TObject_t>& ReadTCA( std::string branch_name )
-   {
-      auto& tca_branch = AttachTCA<TObject_t>(branch_name);
-      tca_branch.ReadFrom(mTree);
-      return tca_branch;
-   }
-
-
-   template<typename TObject_t>
-   TCABranch<TObject_t>& WriteTCA( std::string branch_name )
-   {
-      auto& tca_branch = AttachTCA<TObject_t>(branch_name);
-      tca_branch.WriteTo(mTree);
-      return tca_branch;
-   }
-
-private:
-
-   ///
-   TTree&  mTree;
-
-   std::set< TBranchI* >  mBranches;
-};
 
 #endif
