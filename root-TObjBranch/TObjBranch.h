@@ -9,6 +9,7 @@
  * \version 1.0
  */
 
+#include <tuple>
 #include <utility>
 #include <iterator>
 
@@ -200,5 +201,72 @@ public:
 };
 
 
+/**
+ * Function templates to attach a tuple of `TBranchT`s to a `TTree` for reading.
+ */
+///@{
+template<std::size_t I = 0, typename... Tp>
+inline typename std::enable_if< I < sizeof...(Tp), void >::type
+ReadBranchesFrom(TTree& tree, std::tuple<Tp...>& t)
+{
+   auto& branch = std::get<I>(t);
+   // Enable this branch and its subbranches (note the asterisk wildcard)
+   tree.SetBranchStatus( (branch.GetName() + "*").c_str(), 1);
+   branch.ReadFrom(tree);
+
+   ReadBranchesFrom<I + 1, Tp...>(tree, t);
+}
+
+
+template<std::size_t I = 0, typename... Tp>
+inline typename std::enable_if< I == sizeof...(Tp), void >::type
+ReadBranchesFrom(TTree& tree, std::tuple<Tp...>&)
+{ }
+
+
+/**
+ * Use this template function to read a tuple of `TBranchT`s from a TTree. Note
+ * that other branches will be disabled to optimize the reading.
+ */
+template<typename... TBranchTypes>
+void InitReadFrom(TTree& tree, std::tuple<TBranchTypes...>& branches)
+{
+   // First disable all branches in the tree
+   tree.SetBranchStatus("*", 0);
+   ReadBranchesFrom<0, TBranchTypes...>(tree, branches);
+}
+///@}
+
+
+/**
+ * Function templates to attach a tuple of `TBranchT`s to a `TTree` for writing.
+ */
+///@{
+template<std::size_t I = 0, typename... Tp>
+inline typename std::enable_if< I < sizeof...(Tp), void >::type
+WriteBranchesTo(TTree& tree, std::tuple<Tp...>& t)
+{
+   auto& branch = std::get<I>(t);
+   branch.WriteTo(tree);
+
+   WriteBranchesTo<I + 1, Tp...>(tree, t);
+}
+
+
+template<std::size_t I = 0, typename... Tp>
+inline typename std::enable_if< I == sizeof...(Tp), void >::type
+WriteBranchesTo(TTree& tree, std::tuple<Tp...>&)
+{ }
+
+
+/**
+ * Use this function template to write a tuple of `TBranchT`s to a TTree.
+ */
+template<typename... TBranchTypes>
+void InitWriteTo(TTree& tree, std::tuple<TBranchTypes...>& branches)
+{
+   WriteBranchesTo<0, TBranchTypes...>(tree, branches);
+}
+///@}
 
 #endif
