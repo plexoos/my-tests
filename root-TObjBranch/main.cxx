@@ -95,8 +95,8 @@ void read_tree()
 {
    TChain chain("MuDst", "My Test TTree");
 
-   chain.AddFile("/scratch/smirnovd/random_tests/st_physics_19129011_raw_5500026.MuDst.root");
-   //chain.AddFile("out_file.root");
+   //chain.AddFile("/scratch/smirnovd/random_tests/st_physics_19129011_raw_5500026.MuDst.root");
+   chain.AddFile("out_file.root");
 
    auto glob_tracks     = tob::TCABranch< StMuTrack >("GlobalTracks");
    auto glob_tracks_cov = tob::TCABranch< StDcaGeometry >("CovGlobTrack");
