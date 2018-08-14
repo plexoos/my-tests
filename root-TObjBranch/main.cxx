@@ -150,12 +150,20 @@ void read_tree()
 
       std::cout << "Global tracks:\n";
 
+      int i_track = 1;
+      for (const StMuTrack& track : glob_tracks)
+      {
+         std::cout << "track: " << i_track << "\n";
+         print(track);
+         i_track++;
+         if (i_track > 2) break;
+      }
+
+      std::cout << "Global track cov matrices:\n";
+
       for (int i_track = 1; i_track <= n_records; i_track++)
       {
          std::cout << "  " << "track: " << i_track << "\n";
-
-         StMuTrack& track = glob_tracks.GetObj(i_track-1);
-         print(track);
 
          StDcaGeometry& track_cov = glob_tracks_cov.GetObj(i_track-1);
          track_cov.Dump();
