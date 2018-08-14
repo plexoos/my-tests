@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <tuple>
 #include <ctime>
 
 #include "TChain.h"
@@ -52,10 +53,16 @@ void write_tree()
    TFile out_file("out_file.root", "RECREATE");
    TTree out_tree("MuDst", "My Test TTree", 99, &out_file);
 
-   TObjTree objTree(out_tree);
+   auto glob_tracks = tob::TCABranch< StMuTrack >("GlobalTracks");
+   auto prim_tracks = tob::TCABranch< StMuTrack >("PrimaryTracks");
 
-   auto& glob_tracks = objTree.WriteTCA< StMuTrack >("GlobalTracks");
-   auto& prim_tracks = objTree.WriteTCA< StMuTrack >("PrimaryTracks");
+   auto branches = std::tie(
+      glob_tracks,
+      prim_tracks
+   );
+
+   InitWriteTo(out_tree, branches);
+
 
    StMuTrack* track;
    int track_index;
@@ -88,21 +95,22 @@ void read_tree()
 {
    TChain chain("MuDst", "My Test TTree");
 
-   chain.SetBranchStatus("*", 0);
-   chain.SetBranchStatus("GlobalTracks.*", 1);
-   chain.SetBranchStatus("CovGlobTrack.*", 1);
-   chain.SetBranchStatus("PrimaryTracks.*", 1);
-   chain.SetBranchStatus("CovPrimTrack.*", 1);
-
    chain.AddFile("/scratch/smirnovd/random_tests/st_physics_19129011_raw_5500026.MuDst.root");
    //chain.AddFile("out_file.root");
 
-   TObjTree objTree(chain);
+   auto glob_tracks     = tob::TCABranch< StMuTrack >("GlobalTracks");
+   auto glob_tracks_cov = tob::TCABranch< StDcaGeometry >("CovGlobTrack");
+   auto prim_tracks     = tob::TCABranch< StMuTrack >("PrimaryTracks");
+   auto prim_tracks_cov = tob::TCABranch< StMuPrimaryTrackCovariance >("CovPrimTrack");
 
-   auto& glob_tracks     = objTree.ReadTCA< StMuTrack >("GlobalTracks");
-   auto& glob_tracks_cov = objTree.ReadTCA< StDcaGeometry >("CovGlobTrack");
-   auto& prim_tracks     = objTree.ReadTCA< StMuTrack >("PrimaryTracks");
-   auto& prim_tracks_cov = objTree.ReadTCA< StMuPrimaryTrackCovariance >("CovPrimTrack");
+   auto branches = std::tie(
+      glob_tracks,
+      glob_tracks_cov,
+      prim_tracks,
+      prim_tracks_cov
+   );
+
+   InitReadFrom(chain, branches);
 
    const int n_events = chain.GetEntries();
 
