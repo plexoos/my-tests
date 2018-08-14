@@ -1,5 +1,5 @@
-#ifndef TObjBranch_h
-#define TObjBranch_h
+#ifndef tob_TObjBranch_h
+#define tob_TObjBranch_h
 
 /**
  * A header-only interface to associate ROOT objects with ROOT branches.
@@ -17,6 +17,9 @@
 #include "TObject.h"
 #include "TTree.h"
 #include "TClonesArray.h"
+
+
+namespace tob {
 
 
 template <class TObject_t>
@@ -268,5 +271,8 @@ void InitWriteTo(TTree& tree, std::tuple<TBranchTypes...>& branches)
    WriteBranchesTo<0, TBranchTypes...>(tree, branches);
 }
 ///@}
+
+
+}
 
 #endif
