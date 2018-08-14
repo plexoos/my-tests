@@ -6,7 +6,7 @@
  *
  * \author Dmitri Smirnov <dmixsmi@gmail.com>
  * \date 6 March, 2018
- * \version 1.0
+ * \version 2.0
  */
 
 #include <tuple>
