@@ -80,8 +80,8 @@ struct Collection
     static ItemIter begin(Collection& c)
     {
       // Skip to the first non-empty vector
-      for (int l1 = 0; l1 < max_level1; ++l1)
-        for (int l2 = 0; l2 < max_level2; ++l2)
+      for (int l1 = 0; l1 < c.max_level1; ++l1)
+        for (int l2 = 0; l2 < c.max_level2; ++l2)
           if (!c.myvec[l1][l2].empty()) return ItemIter(c, l1, l2);
       return end(c);
     }
