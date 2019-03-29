@@ -113,10 +113,12 @@ struct Collection
       }
 
       // Skip next vector if empty and increase indices
-      vector_t& nextVector = coll.myvec[iLevel1][iLevel2];
-      if (nextVector.empty() && iLevel1 < coll.max_level1) {
-        iItem = 0;
-        (*this).operator++();
+      if (*this != end(coll)) {
+        vector_t& nextVector = coll.myvec[iLevel1][iLevel2];
+        if (nextVector.empty()) {
+          iItem = 0;
+          (*this).operator++();
+        }
       }
 
       return *this;
