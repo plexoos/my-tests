@@ -76,10 +76,10 @@ struct Collection
   class ItemIter : public std::iterator<std::input_iterator_tag, Item>
   {
   public:
-  
+
     static ItemIter begin(Collection& c)
     {
-      // Skip to the first non-empty vector 
+      // Skip to the first non-empty vector
       for (int l1 = 0; l1 < max_level1; ++l1)
         for (int l2 = 0; l2 < max_level2; ++l2)
           if (!c.myvec[l1][l2].empty()) return ItemIter(c, l1, l2);
@@ -90,58 +90,58 @@ struct Collection
     {
       return ItemIter(c, c.max_level1);
     }
-  
+
     ItemIter() = default;
-  
+
     // ++prefix operator
     ItemIter& operator++()
     {
       ++iItem;
-  
+
       // Reset counters when range maximum reached (next outer nested level)
       vector_t& currVector = coll.myvec[iLevel1][iLevel2];
       if (iItem >= currVector.size()) {
         ++iLevel2;
         iItem = 0;
       }
-  
+
       // Reset counters when range maximum reached (next outer nested level)
       if (iLevel2 >= max_level2) {
         ++iLevel1;
         iLevel2 = 0;
         iItem = 0;
       }
-  
+
       // Skip next vector if empty and increase indices
       vector_t& nextVector = coll.myvec[iLevel1][iLevel2];
       if (nextVector.empty() && iLevel1 < coll.max_level1) {
         iItem = 0;
         (*this).operator++();
       }
-  
+
       return *this;
     }
-  
+
     bool operator==(const ItemIter &other) const
     {
       return &other.coll == &coll && other.iLevel1 == iLevel1 && other.iLevel2 == iLevel2 && other.iItem == iItem;
     }
-  
+
     bool operator!=(const ItemIter &other) const
     {
       return !(*this == other);
     }
-  
+
     Item& operator*()
     {
       return coll.myvec[iLevel1][iLevel2][iItem];
     }
-  
+
     const Item& operator*() const
     {
       return *(*this);
     }
-  
+
     friend std::ostream& operator<<(std::ostream& os, const ItemIter& ii)
     {
       os << std::setw(5) << ii.iLevel1
@@ -149,7 +149,7 @@ struct Collection
          << std::setw(5) << ii.iItem;
       return os;
     }
-  
+
   private:
 
     ItemIter(Collection& c, int l1=0, int l2=0) : coll(c), iLevel1(l1), iLevel2(l2), iItem(0) {}
