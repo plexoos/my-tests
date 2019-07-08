@@ -3,17 +3,18 @@
 #include <sstream>
 #include <string>
 #include <utility>
-#include <vector>
+#include <unordered_map>
 
 
-using token_t = std::pair<std::string, unsigned long>; 
+using proc_token_map_t = std::unordered_map<std::string, unsigned long>;
+using proc_token_t = proc_token_map_t::value_type;
 
-bool parse_and_update(const std::string line, std::vector<token_t>& tokens);
+bool parse_and_update(const std::string line, proc_token_map_t& tokens);
 
 
 int main(int argc, char **argv)
 {
-  std::vector< token_t > tokens{
+  proc_token_map_t tokens{
     {"VmPeak",   0},
     {"VmSize",   0},
     {"VmHWM",    0},
@@ -40,14 +41,14 @@ int main(int argc, char **argv)
 }
 
 
-bool parse_and_update(const std::string line, std::vector<token_t>& tokens)
+bool parse_and_update(const std::string line, proc_token_map_t& tokens)
 {
   std::string label;
   std::istringstream iss(line);
 
   iss >> label;
 
-  for (token_t& token : tokens)
+  for (proc_token_t& token : tokens)
   {
     if (label.find(token.first) != std::string::npos) {
       iss >> token.second;
