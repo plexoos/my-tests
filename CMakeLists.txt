@@ -27,6 +27,8 @@ add_executable(std_function misc/std_function.cxx)
 add_executable(std_chrono misc/std_chrono.cxx)
 add_executable(matrix_pack_unpack misc/matrix_pack_unpack.cxx)
 
+add_subdirectory(linux)
+
 add_executable(test-StiTrackNode-errPropag6 test-StiTrackNode-errPropag6/main.cxx)
 target_link_libraries(test-StiTrackNode-errPropag6 rt pthread)
 
