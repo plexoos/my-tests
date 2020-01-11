@@ -2,12 +2,12 @@ FROM ubuntu:18.04
 
 WORKDIR /tmp
 
-# Install system packages
-#COPY packages.ubuntu /tmp/packages
-ARG PACKAGES
-ENV PACKAGES=$PACKAGES
+COPY packages.ubuntu /tmp/packages
 
-RUN echo "PACKAGES: $PACKAGES" \
+#ENV PACKAGES="$(tr '\\n' ' ' < tmp/packages)"
+
+RUN PACKAGES=$(tr '\n' ' ' < /tmp/packages) \
+ && echo "PACKAGES: $PACKAGES" \
  && apt-get update -qq \
  && apt-get -y install $PACKAGES \
  && apt-get clean \
