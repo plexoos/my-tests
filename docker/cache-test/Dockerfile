@@ -3,10 +3,11 @@ FROM ubuntu:18.04
 WORKDIR /tmp
 
 # Install system packages
-COPY packages.ubuntu /tmp/packages
+#COPY packages.ubuntu /tmp/packages
+ARG PACKAGES
+ENV PACKAGES=$PACKAGES
 
-RUN PACKAGES=$(tr '\n' ' ' < /tmp/packages) \
- && echo "PACKAGES: $PACKAGES" \
+RUN echo "PACKAGES: $PACKAGES" \
  && apt-get update -qq \
  && apt-get -y install $PACKAGES \
  && apt-get clean \
