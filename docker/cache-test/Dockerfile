@@ -4,10 +4,12 @@ WORKDIR /tmp
 
 COPY packages.ubuntu /tmp/packages
 
-#ENV PACKAGES="$(tr '\\n' ' ' < tmp/packages)"
+RUN tr '\n' ' ' < /tmp/packages | (read PACKAGES; echo "XXX $PACKAGES")
 
-RUN PACKAGES=$(cat packages) \
- && echo "PACKAGES: $PACKAGES"
+RUN echo "YYY PACKAGES: $PACKAGES"
+
+#RUN PACKAGES=$(cat packages) \
+# && echo "PACKAGES: $PACKAGES"
 # && apt-get update -qq \
 # && apt-get -y install $PACKAGES \
 # && apt-get clean \
