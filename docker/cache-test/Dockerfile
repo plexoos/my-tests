@@ -4,6 +4,7 @@ ARG MYARG
 
 WORKDIR /tmp
 
+COPY Dockerfile /tmp/MyDockerfile2
 COPY Dockerfile /tmp/MyDockerfile
 COPY Dockerfile /tmp/
 COPY packages.ubuntu5 /tmp/packages
