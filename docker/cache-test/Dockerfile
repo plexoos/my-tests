@@ -20,4 +20,8 @@ RUN apt-get update -qq \
  && apt-get -y install patch \
  && apt-get clean
 
-RUN cd /tmp/root && patch -p1 < /tmp/star-sw-master/patches/root_v5.34.38.patch
+COPY root_v5.34.38-m32.patch /tmp/
+RUN ls -la /tmp
+
+#RUN cd /tmp/root && patch -p1 < /tmp/star-sw-master/patches/root_v5.34.38.patch
+RUN cd /tmp/root && patch -p1 < /tmp/root_v5.34.38-m32.patch
