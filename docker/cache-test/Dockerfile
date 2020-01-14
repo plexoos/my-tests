@@ -4,6 +4,7 @@ ARG MYARG
 
 WORKDIR /tmp
 
+COPY Dockerfile /tmp/MyDockerfile5
 COPY Dockerfile /tmp/MyDockerfile4
 COPY Dockerfile /tmp/MyDockerfile3
 COPY Dockerfile /tmp/MyDockerfile2
