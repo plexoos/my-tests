@@ -4,14 +4,11 @@ ARG MYARG
 
 WORKDIR /tmp
 
-ADD Dockerfile /tmp/MyDockerfile5
-ADD https://raw.githubusercontent.com/star-bnl/star-sw/master/patches/root_v5.34.38-m32.patch .
-COPY Dockerfile /tmp/MyDockerfile5
-COPY Dockerfile /tmp/MyDockerfile4
-COPY Dockerfile /tmp/MyDockerfile3
-COPY Dockerfile /tmp/MyDockerfile2
-COPY Dockerfile /tmp/MyDockerfile
-COPY Dockerfile /tmp/
-COPY packages.ubuntu5 /tmp/packages
-COPY packages.ubuntu /tmp/packages
-COPY packages.${MYARG} /tmp/packages
+# Get STAR software
+ADD https://api.github.com/repos/star-bnl/star-sw/commits/master star-sw-ref.json
+RUN curl -s -L https://github.com/star-bnl/star-sw/archive/master.tar.gz  | tar -xz -C /tmp
+
+# Install ROOT5
+RUN curl https://root.cern.ch/download/root_v5.34.38.source.tar.gz | tar -xz -C /tmp \
+ && mv /tmp/root /tmp/root-5-34-38 && cd /tmp/root-5-34-38 \
+ && patch -p1 < /tmp/star-sw-master/patches/root_v5.34.38.patch
