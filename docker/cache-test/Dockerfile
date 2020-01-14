@@ -4,6 +4,7 @@ ARG MYARG
 
 WORKDIR /tmp
 
+ADD https://raw.githubusercontent.com/star-bnl/star-sw/master/patches/root_v5.34.38-m32.patch .
 COPY Dockerfile /tmp/MyDockerfile5
 COPY Dockerfile /tmp/MyDockerfile4
 COPY Dockerfile /tmp/MyDockerfile3
